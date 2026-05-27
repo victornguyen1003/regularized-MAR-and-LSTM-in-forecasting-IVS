@@ -184,7 +184,7 @@ $$
 
 ---
 
-## Methodology (4): MAR(1) is enough!
+## Methodology (4): First lag is enough!
 
 - IV, obtained by inverting the Black-Scholes formula, is just price
 - The Weak Efficient Market Hypothesis *(Eugene Fama, 1970)*: today’s stock prices reflect all the data of past prices
@@ -208,11 +208,11 @@ $$
   - Source: Bloomberg
   - Time period: Apr 2016 - May 2026
 - **Timeline**:
-  - Month 1: formalize math + acquire data
-  - Month 2: feature engineer/build/train/fine-tune models
-  - Month 3: test/evaluate/compare models
-  - Month 4: document
-  - Month 5 & 6: validate and revise
+  - Phase 1: formalize math + acquire data
+  - Phase 2: feature engineer/build/train/fine-tune models
+  - Phase 3: test/evaluate/compare models
+  - Phase 4: document
+  - Phase 5: validate and revise
 
 --- 
 
