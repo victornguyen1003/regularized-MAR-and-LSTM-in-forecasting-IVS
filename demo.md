@@ -71,51 +71,21 @@ style: |
 
 ---
 
-<!-- _class: table-slide -->
+### Options Pricing Overview
 
-## Trading and Big Money
-
-<div class="table-middle">
-
-| Company | Headcount | Compensation |
-| --- | --- | --- |
-| Jane Street | 3K | Mean 2.68M |
-| Google | 190K | Median 331K |
-
-</div>
-
-<p class="table-footnote">
-  Source: Yahoo Finance
-</p>
-
----
-
-## Options Pricing
-
-- **Equity option**: equity derivative that gives the owner the right, but not the obligation, to execute a trade.
-
-- **Two types**: call & put options 
+- Option: financial instruments that give the owner the right, but not the obligation, to buy or sell an underlying asset at a strike price
   - Strike price
-  - Expiration day 
-  - Premium
+  - Time to maturity
 
----
+- Two types: call and put options
 
-## Black Scholes Model
-
-- Assumptions:
-1. The underlying stock does not pay a dividend and never will.
-2. The option must be European-style.
-3. Financial markets are efficient.
-4. No commissions are charged on the trade.
-5. Interest rates remain constant.
-6. The underlying stock returns are log-normally distributed.
+- European options: can only be exercised at expiration
 
 ---
 
 <!-- _class: bs-slide -->
 
-## Black-Scholes's model
+### Black-Scholes's model
 
 $$
 C = S_0 N(d_1) - K e^{-rT} N(d_2)
@@ -154,61 +124,298 @@ T: time to maturity <br>
 </div>
 
 ---
-<!-- _class: image-slide -->
 
-## Implied Volatility (IV) Surface
-<br>
+### Black Scholes Model
 
-<div class="image-middle">
+- Assumptions:
+1. The underlying stock does not pay a dividend and never will
+2. The option must be European-style
+3. Financial markets are efficient
+4. No commissions are charged on the trade
+5. Interest rates remain constant
+6. The underlying stock returns are log-normally distributed
 
-![w:650 h:500](https://nag.com/wp-content/uploads/2023/06/example-implied-volatility-surface.png)
+---
+
+### Data Collection
+
+<div style="display: flex; align-items: top; gap: 40px;">
+
+  <div style="flex: 1;">
+    <br>
+    <strong>Source:</strong><br>Bloomberg<br>
+    <strong>Time period:</strong><br>4/1/2016 - 5/25/2026<br>
+    <strong>Moneyness (S/K):</strong><br>80%, 90%, 95%, 97.5%, 100%, 102.5%, 105%, 110%, 120%<br>
+    <strong>Time to maturity:</strong><br>1M, 2M, 3M 6M, 12M, 18M, 24M<br>
+  </div>
+
+  <div style="flex: 1;">
+    <img src="ivs_5-25-2026.png" width="500" height="500" alt="IVS Chart" />
+  </div>
 
 </div>
 
 ---
 
-## Methodology (3): MAR Lasso? Much Better! Maybe...
+### Vector Autoregressive Model (VAR)
 
-Lasso: further reduces # of parameters
+Let $X_t \in \mathbb{R}^{m \times n}$ represent the IV matrix at time $t$
 
-Rewrite MAR into: 
+VAR(1):
 
 $$
-\text{vec}(Y_t) = ((B Y_{t-1}') \otimes I_{p_1}) \text{vec}(A) + \text{vec}(E_t)
+\text{vec}(X_t) = \Phi\text{vec}(X_{t-1}) + e_t
 $$
-$$
-\text{vec}(Y_t') = ((A Y_{t-1}) \otimes I_{p_2}) \text{vec}(B) + \text{vec}(E_t')
-$$
+
+*where $vec(.)$ is the vectorization of a matrix by stacking its columns*
+
+- Fail to capture relationship between rows and columns
+- Number of parameters: $O(m^2n^2)$
 
 ---
-Denote: 
+
+### Matrix Autoregressive Model (MAR) <span style="font-weight: normal; font-size: 65%; font-style: italic;">(Chen et al., 2020)</span>
+
+MAR(1):
+$$
+X_t = A X_{t-1} B^\top + E_t
+$$
+
+- Preserve the matrix structure
+- Number of parameters: $O(m^2+n^2)$
+
+Vectorized representation of MAR(1): 
+
+$$\text{vec}(X_t) = (B \otimes A)\text{vec}(X_{t-1}) + \text{vec}(E_t)$$
+*where $\otimes$ denotes the matrix Kronecker product*
+
+---
+
+### MAR Estimation (1): Projection
+
+Project $\hat{\Phi}$ onto the space of Kronecker products under the Frobenius norm:
+  $$(\hat{A}_1, \hat{B}_1) = \arg\min_{A,B} \|\hat{\Phi} - B \otimes A\|_F^2$$
+*An explicit solution exists, obtained through a singular value decomposition (SVD) of a re-arrangement version of ${\Phi}$ (Van Loan, 2000)* 
+
+*The set of entries of $B \otimes A$ is the same as the set of entries of $\text{vec}(A)\text{vec}(B)'$*
+
+---
+
+Define a re-arrangement operator $\mathcal{G} : \mathbb{R}^{mn \times mn} \rightarrow \mathbb{R}^{m^2 \times n^2}$
+$$
+\mathcal{G}(B \otimes A) = \text{vec}(A)\text{vec}(B)'
+$$
+
+Given $\|\mathcal{G}(\boldsymbol{C})\|_F = \|\boldsymbol{C}\|_F$ and $\mathcal{G}$ is linear
+
 $$
 \begin{aligned}
-Z_{t-1} &= (B Y_{t-1}') \otimes I_{p_1}, \quad \widehat{Z}_{t-1} = (\widehat{B} Y_{t-1}') \otimes I_{p_1} \\
-Z_{t-1}^* &= (A Y_{t-1}) \otimes I_{p_2}, \quad \widehat{Z}_{t-1}^* = (\widehat{A} Y_{t-1}) \otimes I_{p_2}
+\min_{\boldsymbol{A},\boldsymbol{B}} \|\hat{\Phi} - \boldsymbol{B} \otimes \boldsymbol{A}\|_F^2$
+
+&= \min_{\boldsymbol{A},\boldsymbol{B}} \|\mathcal{G}(\hat{\Phi}) - \mathcal{G}(\boldsymbol{B} \otimes \boldsymbol{A})\|_F^2
+
+\\ &= \min_{\boldsymbol{A},\boldsymbol{B}} \|\mathcal{G}(\hat{\Phi}) - \text{vec}(\boldsymbol{A})\text{vec}(\boldsymbol{B})'\|_F^2 \\
+
+&= \min_{\boldsymbol{A},\boldsymbol{B}} \|\tilde{\Phi} - \text{vec}(\boldsymbol{A})\text{vec}(\boldsymbol{B})'\|_F^2,
 \end{aligned}
 $$
 
-Optimization problems:
-$$
-\widehat{\alpha} = \arg\min_{\alpha \in \mathbb{R}^{p_1^2}} \left\{ \frac{1}{T} \sum_{t=2}^T \| \mathbf{y}_t - \widehat{\mathbf{Z}}_{t-1} \alpha \|_2^2 + \lambda_{1,T} \|\alpha\|_1 \right\} \tag{1}
-$$
-
-$$
-\widehat{\beta} = \arg\min_{\beta \in \mathbb{R}^{p_2^2}} \left\{ \frac{1}{T} \sum_{t=2}^T \| \mathbf{y}_t^* - \widehat{\mathbf{Z}}_{t-1}^* \beta \|_2^2 + \lambda_{2,T} \|\beta\|_1 \right\} \tag{2}
-$$
-
----
-Algorithms:
-1. Obtain $\widehat{A}_0$ and $\widehat{B}_0$ by the method in Chen et al. (2020), denoted as $\widehat{B}^{(0)} = \widehat{B}_0$ and $\widehat{A}^{(0)} = \widehat{A}_0$, respectively.
-2. For the $i$-th iteration ($i = 1, 2, \dots$),
-   (a) Fix $B = \widehat{B}^{(i-1)}$, apply Lasso to (1) and obtain $\widehat{A}^{(i)}$.
-   (b) Fix $A = \widehat{A}^{(i)}$, apply Lasso to (2) and obtain $\widehat{B}^{(i)}$.
-   (c) The iteration stops if the convergence criterion is satisfied, otherwise we go to the next iteration and repeat Steps 2(a)–2(b).
+*where $\tilde{\Phi} = \mathcal{G}(\hat{\Phi})$ is the re-arranged $\hat{\Phi}$*
 
 ---
 
+Then,
+$$
+\text{vec}(\hat{\boldsymbol{A}})\text{vec}(\hat{\boldsymbol{B}})' = d_1 \boldsymbol{u}_1 \boldsymbol{v}_1',
+$$
 
+*where $d_1$ is the largest singular value of $\tilde{\Phi}$, and $u_1$, $v_1$ are the corresponding first left and right singular vectors*
+
+By converting the vectors into matrices, we obtain the *projection estimators (PROJ)* of $A$ and $B$, denoted by $\hat{A}_1$ and $\hat{B}_1$, with the normalization that $\|\hat{A}_1\|_F = 1$, refered
+
+---
+
+### MAR Estimation (2): Iterated least square
+
+Assume entries of $E_t$ are i.i.d. with mean zero and constant variance:
+  $$\min_{A,B} \sum_t \|X_t - A X_{t-1} B'\|_F^2$$
+
+FOCs:
+  $$\sum_t A X_{t-1} B' B X_{t-1}' - \sum_t X_t B X_{t-1}' = 0$$
+  $$\sum_t B X_{t-1}' A' A X_{t-1} - \sum_t X_t' A X_{t-1} = 0$$
+
+---
+
+With probability one, the problem has a unique global minimum, and finitely many local minima
+
+Using the $\hat{A}_1$ and $\hat{B}_1$ as the starting values, iteratively update one matrix, $\hat{A}$ or $\hat{B}$, while fixing the other
+  $$B \leftarrow \left(\sum_t X_t' A X_{t-1}\right) \left(\sum_t X_{t-1}' A' A X_{t-1}\right)^{-1}$$
+  $$A \leftarrow \left(\sum_t X_t B X_{t-1}'\right) \left(\sum_t X_{t-1} B' B X_{t-1}'\right)^{-1}$$
+
+to obtain $\hat{A}_2$ and $\hat{B}_2$, refered as *LSE*
+
+---
+
+Split data: 80% old for train and 20% new for test
+```
+n_obs = len(Y_var)
+split_idx = int(n_obs * 0.8)
+Y_train, Y_test = Y_var.iloc[:split_idx], Y_var.iloc[split_idx:]
+```
+Fit VAR(1)
+```
+var1_model = VAR(Y_train)
+var1_res = var1_model.fit(1)
+```
+- The coefficient matrix of VAR(1) is a 63x63 matrix (3969 parameters)
+
+---
+
+Fit VAR(p)
+```
+varp_model = VAR(Y_train)
+varp_aic_res = varp_model.fit(maxlags=15, ic='aic') # p is selected by AIC
+varp_bic_res = varp_model.fit(maxlags=15, ic='bic') # p is selected by BIC
+```
+- Optimal p selected by AIC: 15;
+- Optimal p selected by BIC: 1
+*BIC imposes a greater penalty on complexity*
+$$\text{AIC} = \ln\left(\frac{\text{SSR}}{T}\right) + (p+1)\frac{2}{T},
+\qquad
+\text{BIC} = \ln\left(\frac{\text{SSR}}{T}\right) + (p+1)\frac{\ln(T)}{T}$$
+
+Fit MAR(1): converged after 355 iterations
+
+---
+
+### Regularized MAR with LASSO <span style="font-weight: normal; font-size: 65%; font-style: italic;">(Jiang et al., 2024)</span>
+
+Rewrite MAR into
+
+$$
+\text{vec}(Y_t) = ((B Y_{t-1}') \otimes I_m) \text{vec}(A) + \text{vec}(E_t)
+$$
+$$
+\text{vec}(Y_t') = ((A Y_{t-1}) \otimes I_n) \text{vec}(B) + \text{vec}(E_t')
+$$
+
+Denote
+$$
+\begin{aligned}
+Z_{t-1} &= (B Y_{t-1}') \otimes I_m, \quad \widehat{Z}_{t-1} = (\widehat{B} Y_{t-1}') \otimes I_m \\
+Z_{t-1}^* &= (A Y_{t-1}) \otimes I_n, \quad \widehat{Z}_{t-1}^* = (\widehat{A} Y_{t-1}) \otimes I_n
+\end{aligned}
+$$
+
+---
+
+Using $\widehat{A}_2$ and $\widehat{B}_2$ as the starting values, iteratively solve the optimization to to update one matrix, $\widehat{A}$ or $\widehat{B}$, while fixing the other
+$$
+\widehat{\alpha} = \arg\min_{\alpha \in \mathbb{R}^{m^2}} \left\{ \frac{1}{T} \sum_{t=2}^T \| \mathbf{y}_t - \widehat{\mathbf{Z}}_{t-1} \alpha \|_2^2 + \lambda_{1,T} \|\alpha\|_1 \right\} \tag{1}
+$$
+
+$$
+\widehat{\beta} = \arg\min_{\beta \in \mathbb{R}^{n^2}} \left\{ \frac{1}{T} \sum_{t=2}^T \| \mathbf{y}_t^* - \widehat{\mathbf{Z}}_{t-1}^* \beta \|_2^2 + \lambda_{2,T} \|\beta\|_1 \right\} \tag{2}
+$$
+
+
+The estimated coefficients are consistent under the condition that $\max(m,n)mn/T \rightarrow 0$ for finite sparsity $s_0 = |S|$ where $S =$ {$1,2,...,\hat{m}$}
+
+---
+
+Fit MAR Lasso:
+- Use 5-Fold Expanding Window CV to select $\lambda_{1,T}$ and $\lambda_{2,T}$
+  - Optimal $L_1$ penalty for A ($\lambda_{1,T}$): 0.1
+  - Optimal $L_2$ penalty for B ($\lambda_{2,T}$): 0.001
+  - Best average MSE: 1.761308
+- Converged after 8 iterations
+
+---  
+
+### MSFE Comparison
+<style scoped>
+table {
+  width: 100%;
+  font-size: 0.8em; /* Adjusts text size to fit cleanly */
+}
+th:nth-child(1) { width: 19%; text-align: center; } /* horizon_days */
+th:nth-child(2) { width: 18%; text-align: center; } /* VAR(1) */
+th:nth-child(3) { width: 20%; text-align: center; } /* VAR(15) AIC */
+th:nth-child(4) { width: 20%; text-align: center; } /* MAR(1) */
+th:nth-child(5) { width: 23%; text-align: center; } /* MAR(1) LASSO */
+
+td { text-align: center; }
+</style>
+
+| Horizon (day) | VAR(1) | VAR(15) AIC | MAR(1) | MAR(1) LASSO |
+| :--- | :--- | :--- | :--- | :--- |
+| 1 | 0.89 | 2.45 | 0.81 | 0.81 |
+| 5 | 3.15 | 7.93 | 2.98 | 2.87 |
+| 10 | 4.48 | 9.95 | 5.21 | 4.37 |
+| 15 | 5.14 | 10.43 | 8.61 | 5.55 |
+| 20 | 5.20 | 9.95 | 15.60 | 6.97 |
+| 25 | 5.89 | 10.20 | 33.35 | 9.68 |
+| 30 | 6.23 | 10.77 | 85.49 | 13.67 |
+| 60 | 7.37 | 13.72 | 74965.18 | 115.34 |
+| 90 | 6.64 | 14.42 | 136915836.32 | 413.36 |
+
+<!-- 
+1. VAR(15) underperforms first-lag models
+1. For first-lag models, MAR and MAR Lasso slightly outperform VAR at 1-day and 5-day horizons. As the time horizon increases, all model perform worse but VAR is more stable while MAR and MAR Lasso explode
+-->
+
+---
+
+- Q: Why does MSFE of MAR explode as the time horizon increases?
+- A: 
+  - MAR iteratively solves local minimization problems, which more likely yields an eigenvalue greater than 1
+  - Iterated multi-period forecast raises the eigenvalue to a power equal to the time horizon
+  - Forecast compounds exponentially and thus MSFE explodes
+
+---
+
+- Q: Why do first-lag models outperform higher-order model VAR(15)?
+- A:
+  - IV, obtained by inverting the Black-Scholes formula, is just price
+  - The Weak Efficient Market Hypothesis *(Eugene Fama, 1970)*: today’s stock prices reflect all the data of past prices and that no form of technical analysis can aid investors
+  - The First Fundamental Theorem of Asset Pricing *(Harrison, Kreps, 1979)*: a financial market is arbitrage-free if and only if an Equivalent Martingale Measure exists under which the discounted price of all traded assets are martingales.
+
+---
+
+<!-- _class: image-slide -->
+
+<div class="image-middle">
+
+![w:1100 h:650](MSEComp.png)
+
+</div>
+
+---
+
+<!-- _class: image-slide -->
+
+<div class="image-middle">
+
+![w:1100 h:650](short-horizon-forecast.png)
+
+</div>
+
+<!-- 
+Prediction is more accurate at capturing linear trends but fails to predict the changes
+Looks like it gives late predictions
+-->
+
+---
+
+<!-- _class: image-slide -->
+
+<div class="image-middle">
+
+![w:1100 h:650](long-horizon-forecast.png)
+
+</div>
+
+---
 
 
 

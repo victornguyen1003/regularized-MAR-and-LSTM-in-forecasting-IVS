@@ -1,0 +1,52 @@
+1. MAR VAR MAR Lasso assumes stationarity: so the trend is learnt late and it seems like prediction is late and shifted
+--> since data is autocorrelated -> predict correct if the trend remains --> but fail to capture the change of pattern44
+
+2. Why LSTM underperforms VAR
+
+Why Vanilla LSTMs Fail in Finance (And How We Fixed It)
+
+To understand the fix, we first have to understand why the original LSTM performed so poorly compared to your VAR(1) and MAR(1) models.
+
+1. The "Random Walk" & Identity Problem
+
+Financial data, especially Implied Volatility (IV), is highly persistent. The best predictor of tomorrow's volatility is usually today's volatility.
+
+What VAR/MAR does: Linear models easily learn this. A VAR(1) model $X_t = A X_{t-1}$ just sets the matrix $A$ very close to an Identity Matrix (1s on the diagonal, 0s elsewhere). It naturally learns $X_t \approx X_{t-1}$.
+
+What Vanilla LSTM does: An LSTM uses complex, non-linear math (Sigmoid and Tanh gates). It is incredibly difficult for an LSTM to learn the simple "Identity Function" ($f(x) = x$). Instead of just copying yesterday's value, it tries to mathematically reconstruct the absolute value of the entire volatility surface from scratch every single day.
+
+The Fix: The Residual Connection
+Instead of asking the neural network to predict the absolute value of tomorrow's IV surface, we changed the architecture to predict the Delta (Change).
+
+Old Math: Prediction = LSTM(History)
+
+New Math: Prediction = Last_Known_Value + LSTM(History)
+
+This is called a Residual Connection (the same concept behind ResNet in image processing). Now, the LSTM only has to learn what makes tomorrow different from today. If it's unsure, it predicts 0, meaning the forecast naturally defaults to the last known state.
+
+2. The Multi-Step "Hallucination" Trap
+
+You are forecasting up to 90 days ahead ($h=90$). To do this, you predict Day 1, feed Day 1 back into the model to predict Day 2, and so on.
+
+What VAR/MAR does: When you multiply a matrix by itself 90 times ($A^{90}$), the values smoothly and mathematically decay toward the historical mean. It's a stable, predictable curve.
+
+What Vanilla LSTM does: Because the LSTM couldn't learn the exact identity function, its Day 1 prediction has a tiny error. When you feed that error back into the non-linear tanh gates to predict Day 2, the error compounds. By Day 20, the neural network is feeding on its own massive errors and begins to "hallucinate" wildly unrealistic volatility surfaces.
+
+The Fix: Because our new model predicts the Delta, the compounding error is drastically reduced. The network acts as a gentle modifier to the anchor (the last known value), preventing the recursive loop from exploding into infinity.
+
+3. The Overfitting Trap (Loss of Spatial Structure)
+
+Your MAR(1) model is brilliant because it treats the data as a 2D matrix (Moneyness vs. Tenor). It knows that a 30-day 90% moneyness option is mathematically related to a 60-day 90% moneyness option.
+
+What Vanilla LSTM does: To feed the data into a standard LSTM, we had to "flatten" the beautiful 2D surface into a 1D vector of ~100 random numbers. The LSTM has no idea these numbers represent a grid. Because neural networks have thousands of parameters, it simply memorized the training data (overfitting) but completely failed on the unseen 2026 test data.
+
+The Fix: Regularization (Dropout & Weight Decay)
+Since we had to flatten the data, we needed to stop the network from memorizing noise.
+
+Dropout (nn.Dropout(0.2)): This randomly turns off 20% of the neurons during training. It forces the network to learn robust, generalized patterns instead of relying on specific, noisy data points.
+
+Weight Decay (weight_decay=1e-4): Also known as L2 Regularization. This penalizes the network for having large weights, forcing the LSTM to make very small, conservative predictions for the Delta.
+
+Summary
+
+By combining a Residual Connection with Regularization, we forced the deep learning model to act more like your linear VAR/MAR models—anchoring to reality and making conservative, mean-reverting adjustments—while still allowing it to find complex non-linear patterns that simple matrix multiplication might miss.
