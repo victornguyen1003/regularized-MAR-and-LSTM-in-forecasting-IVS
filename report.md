@@ -161,7 +161,7 @@ Assumptions:
   </div>
 
   <div style="flex: 1;">
-    <img src="ivs_5-25-2026.png" width="500" height="500" alt="IVS Chart" />
+    <img src="pics/ivs_5-25-2026.png" width="500" height="500" alt="IVS Chart" />
   </div>
 
 </div>
@@ -472,7 +472,7 @@ $\lambda_{1,T}$ = 3.59381, $\lambda_{2,T}$ = 0.00167, Best MSE = 1.704284
 
 <div class="image-middle">
 
-![w:1100 h:650](MSEComp.png)
+![w:1100 h:650](pics/MSEComp.png)
 
 </div>
 
@@ -482,7 +482,7 @@ $\lambda_{1,T}$ = 3.59381, $\lambda_{2,T}$ = 0.00167, Best MSE = 1.704284
 
 <div class="image-middle">
 
-![w:1100 h:650](short-horizon-forecast.png)
+![w:1100 h:650](pics/short-horizon-forecast.png)
 
 </div>
 
@@ -497,7 +497,7 @@ Looks like it gives late predictions
 
 <div class="image-middle">
 
-![w:1100 h:650](long-horizon-forecast.png)
+![w:1100 h:650](pics/long-horizon-forecast.png)
 
 </div>
 
@@ -531,7 +531,7 @@ Looks like it gives late predictions
 
 <div class="image-middle">
 
-![w:1100 h:650](RNNIntro.png)
+![w:1100 h:650](pics/RNNIntro.png)
 
 </div>
 
@@ -541,7 +541,7 @@ Looks like it gives late predictions
 
 <div class="image-middle">
 
-![w:1100 h:650](RNNUnrolled.png)
+![w:1100 h:650](pics/RNNUnrolled.png)
 
 </div>
 
@@ -551,7 +551,7 @@ Looks like it gives late predictions
 
 <div class="image-middle">
 
-![w:1100 h:650](RNNFormula.png)
+![w:1100 h:650](pics/RNNFormula.png)
 
 </div>
 
@@ -561,7 +561,7 @@ Looks like it gives late predictions
 
 <div class="image-middle">
 
-![w:1100 h:650](RNNGradient.png)
+![w:1100 h:650](pics/RNNGradient.png)
 
 </div>
 
@@ -571,7 +571,7 @@ Looks like it gives late predictions
 
 <div class="image-middle">
 
-![w:1100 h:650](LSTMIntro.png)
+![w:1100 h:650](pics/LSTMIntro.png)
 
 </div>
 
@@ -581,7 +581,7 @@ Looks like it gives late predictions
 
 <div class="image-middle">
 
-![w:1100 h:650](LSTMGradient.png)
+![w:1100 h:650](pics/LSTMGradient.png)
 
 </div>
 
@@ -750,7 +750,7 @@ $$\mathcal{L} = || (y_{t} - y_{t-1}) - W h_{t-1}||_F^2$$
 
 <div class="image-middle">
 
-![w:1100 h:650](MSE_LSTM.png)
+![w:1100 h:650](pics/MSE_LSTM.png)
 
 </div>
 
