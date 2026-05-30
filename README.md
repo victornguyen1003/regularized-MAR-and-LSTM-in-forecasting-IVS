@@ -21,7 +21,7 @@ This project investigates the forecasting the Implied Volatility (IV) surface fo
 * **Penalty Trade-offs:** Regularized MAR (LASSO) with smaller penalties improved short-term forecasts but failed to avoid long-term explosion. Conversely, larger penalties successfully shrank the spectral radius to mitigate long-term explosion, but caused underfitting in the short term[cite: 1, 2].  
 * **Best Overall Model:** Residual LSTM achieved similar short-term results to the lightly penalized MAR LASSO but remained significantly more stable across extended multi-day horizons.
 
-### References
+## References
 
 * Jiang, H., Shen, B., Li, Y., & Gao, Z. (2024). Regularized estimation of high-dimensional matrix-variate autoregressive models
 * Chen, R., Xiao, H., & Yang, D. (2018). Autoregressive models for matrix-valued time series
