@@ -1,6 +1,6 @@
 # Regularized MAR and LSTM in Forecasting IV Surfaces
 
-## Abstract
+## Introduction
 This project investigates the forecasting the Implied Volatility (IV) surface for SPX options by comparing traditional Vector Autoregressive (VAR) models with modern Matrix Autoregressive (MAR) models, Regularized MAR (LASSO), and Long Short-term Memory (LSTM). For a comprehensive breakdown of the methodology, please refer to the report.pdf document.  
 
 
@@ -18,7 +18,7 @@ This project investigates the forecasting the Implied Volatility (IV) surface fo
 ## Results and Performance
 * **Random Walk:** VAR(15) showed the worst performance due to overfitting, which suggests IV is a martingale
 * **Short-Term vs. Long-Term:** MAR(1) slightly outperformed VAR(1) for 1-day and 5-day horizons, but experienced exponentially exploding MSFE on longer horizons.
-* **Penalty Trade-offs:** Regularized MAR (LASSO) with smaller penalties improved short-term forecasts but failed to avoid long-term explosion. Conversely, larger penalties successfully shrank the spectral radius to mitigate long-term explosion, but caused underfitting in the short term[cite: 1, 2].  
+* **Penalty Trade-offs:** Regularized MAR (LASSO) with smaller penalties improved short-term forecasts but failed to avoid long-term explosion. Conversely, larger penalties successfully shrank the spectral radius to mitigate long-term explosion, but caused underfitting in the short term.  
 * **Best Overall Model:** Residual LSTM achieved similar short-term results to the lightly penalized MAR LASSO but remained significantly more stable across extended multi-day horizons.
 
 ## References
