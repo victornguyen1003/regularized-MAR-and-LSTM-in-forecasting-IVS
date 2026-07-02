@@ -1,0 +1,14 @@
+name: regularized-MAR-vs-LSTM-in-forecasting-implied-volitility-surfaces
+channels:
+- defaults
+- conda-forge 
+dependencies:
+- python=3.10
+- ipykernel
+- numpy
+- pandas
+- matplotlib
+- seaborn
+- statsmodels
+- scikit-learn
+- pytorch
