@@ -30,6 +30,7 @@ As the project is still going, please first find the demo prototype script and r
 ├── src/                       # Production-level code
 ├── reports/                   # Figures and finding reports
 └── README.md                  # Project overview
+```
 
 ## Run locally
 Prerequisites: Conda
