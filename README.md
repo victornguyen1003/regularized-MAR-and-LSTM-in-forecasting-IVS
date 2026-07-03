@@ -23,7 +23,7 @@ As the project is still going, please first find the demo prototype script and r
 │   └── environment.yml        # Conda environment dependencies
 ├── data/raw/                  # Original, untouched yearly datasets
 ├── demo/                      # Demo code and report
-│   ├── pics/                # Figures 
+│   ├── pics/                  # Figures 
 │   ├── demo.ipynb             # Prototype script
 │   └── report.md              # Findings
 ├── notebooks                  # Notebooks for EDA and modeling
