@@ -19,7 +19,8 @@ def main():
     logger.info("\n=== Data Preprocessing ===")
     # Load and transform data
     file_path = Path(config.RAW_DATA_DIR) / "ivs_spx_16_26.csv"
-    df = util.load_transform_data(file_path)
+    df = util.load_raw_data(file_path)
+    df = util.transform_raw_data(df)
 
     logger.info("\n=== Visualization ===")
     # Plot implied volatility surface for a specific date
@@ -34,6 +35,8 @@ def main():
 
     logger.info("\n=== VAR Models ===")
     run_var(horizons=config.FORECAST_HORIZONS, y=df, cutoff_date=cutoff_date)
+
+    logger.info("\n=== MAR Model ===")
 
 if __name__ == "__main__":
     main()

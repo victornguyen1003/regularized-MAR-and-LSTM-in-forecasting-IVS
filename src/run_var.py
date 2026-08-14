@@ -7,7 +7,8 @@ from datetime import datetime
 from collections import defaultdict
 from pathlib import Path
 
-from config import PROCESSED_DATA_DIR, TRAIN_PROPORTION, FORECAST_HORIZONS, RES_DIR
+from config import PROCESSED_DATA_DIR, FORECAST_HORIZONS, RES_DIR
+from util import split_train_test_data
 
 import logging
 logger = logging.getLogger(__name__)
@@ -15,6 +16,7 @@ logger = logging.getLogger(__name__)
 class VAR_Results:
     def __init__(self, res: "VARResults"):
         self.res = res
+        self.phi_hat = res.params
         self.p = res.k_ar
         self.forecasts = defaultdict(list)
         self.squared_errors = defaultdict(list)
@@ -62,35 +64,34 @@ class VAR_Results:
         return self.mse[h]
 
 
-def train_and_test(horizons: list[int], y: pd.DataFrame, cutoff_date: datetime) -> pd.DataFrame:
+def train_and_test(horizons: list[int], y: pd.DataFrame) -> pd.DataFrame:
     """Compute the MSE table for VAR models for a given list of forecast horizons.
 
     Args:
         models: list of VAR model results
         horizons: list of forecast horizons
         y: date-indexed data for backtesting
-        cutoff_date: date from which forecasts are made for backtesting
     Returns:
         MSE table
     """
     # Split dataset
-    cutoff_index = y.index.get_loc(cutoff_date)
-    y_train, y_test = y.iloc[:cutoff_index], y.iloc[cutoff_index:]
+    y_train, y_test = split_train_test_data(y)
     logger.info(f"# observations: total={len(y)}, train={len(y_train)}, test={len(y_test)}.")
 
 
     logger.info("Starting training...")
+    y_train_centered = y_train - y_train.mean()
     var = VAR(y_train.to_numpy().astype(float))
 
     logger.info("Fitting VAR(1)...")
-    res_var_1 = VAR_Results(var.fit(1))
+    res_var_1 = VAR_Results(var.fit(1, trend='n'))
 
     logger.info("Fitting VAR(p) with p selected by AIC...")
-    res_var_aic = VAR_Results(var.fit(maxlags=15, ic='aic'))
+    res_var_aic = VAR_Results(var.fit(maxlags=15, ic='aic', trend='n'))
     logger.info(f"p selected by AIC: {res_var_aic.p}")
 
     logger.info("Fitting VAR(p) with p selected by BIC...")
-    res_var_bic = VAR_Results(var.fit(maxlags=15, ic='bic'))
+    res_var_bic = VAR_Results(var.fit(maxlags=15, ic='bic', trend='n'))
     logger.info(f"p selected by BIC: {res_var_bic.p}")
 
 
@@ -101,6 +102,10 @@ def train_and_test(horizons: list[int], y: pd.DataFrame, cutoff_date: datetime) 
     if res_var_bic.p != 1 and res_var_bic.p != res_var_aic.p:
         var_models.append(res_var_bic)
 
+    # Save phi_hat for VAR(1) model
+    RES_DIR.mkdir(parents=True, exist_ok=True)
+    np.savetxt(RES_DIR / f"var_1_phi_hat.csv", res_var_1.phi_hat, delimiter=",")
+    logger.info(f"Saved VAR(1) phi_hat to {RES_DIR / f'{res_var_1.name}_phi_hat.csv'} with shape {res_var_1.phi_hat.shape}.")
 
     # Extract forecast dates for backtesting
     dates_to_test = y_test.index
@@ -114,7 +119,7 @@ def train_and_test(horizons: list[int], y: pd.DataFrame, cutoff_date: datetime) 
                 model.compute_squared_error(h, d, y)
 
             model.compute_mse(h)
-            logger.info(f"MSE of {model.name} for horizon {h}: {model.mse[h]}.")
+            logger.debug(f"MSE of {model.name} for horizon {h}: {model.mse[h]}.")
 
         df_single_mse = pd.DataFrame(model.mse.items(), columns=['h', model.name])
         df_mse = df_mse.merge(df_single_mse, on='h')
@@ -145,14 +150,8 @@ def main():
 
     df.index = pd.to_datetime(df.index)
 
-    logger.info("\n=== Data Split ===")
-    n = len(df)
-    cutoff_index = int(n*TRAIN_PROPORTION)
-    cutoff_date = df.index[cutoff_index]
-    logger.info(f"Cutoff date from which forecasts for backtesting are made: {cutoff_date}")
-
     logger.info("\n=== VAR Models ===")
-    train_and_test(horizons=FORECAST_HORIZONS, y=df, cutoff_date=cutoff_date)
+    train_and_test(horizons=FORECAST_HORIZONS, y=df)
 
 
 if __name__ == "__main__":
