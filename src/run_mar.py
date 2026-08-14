@@ -122,7 +122,6 @@ class MAR_Results:
     def train(self, X_train_centered: pd.DataFrame, Phi_hat: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         dim_moneyness = X_train_centered.columns.get_level_values('moneyness').nunique()
         dim_tenor = X_train_centered.columns.get_level_values('tenor').nunique()
-        print(f"dim_moneyness: {dim_moneyness}, dim_tenor: {dim_tenor}")
         
         A_proj, B_proj = _project(Phi_hat, dim_moneyness, dim_tenor)
         A_lse, B_lse = _iterate(X_train_centered, A_proj, B_proj)
