@@ -159,6 +159,8 @@ class MAR_Results:
         start_date = X_centered.index[start_index]
         
         input = X_centered.loc[start_date].unstack('tenor').values
+        # print(f"input: {input}, A: {self.A}, B: {self.B}") # Debugging line to check values
+        # print(f"input shape: {input.shape}, A shape: {self.A.shape}, B shape: {self.B.shape}") # Debugging line to check shapes
         prediction = self.forecast(input, steps=h)
 
         self.forecasts[h].append(prediction)
@@ -191,7 +193,7 @@ class MAR_Results:
 
         df_mse = pd.DataFrame(self.mse.items(), columns=['h', self.name])
         RES_DIR.mkdir(parents=True, exist_ok=True)
-        out_path = RES_DIR / f"mar_mse.csv"
+        out_path = RES_DIR / f"{self.name}_mse.csv"
         df_mse.to_csv(out_path, index=False)
         logger.info(f"Successfully saved MSE table to {out_path}.")
 
