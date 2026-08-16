@@ -104,8 +104,8 @@ def train_and_test(horizons: list[int], y: pd.DataFrame) -> pd.DataFrame:
 
     # Save phi_hat for VAR(1) model
     RES_DIR.mkdir(parents=True, exist_ok=True)
-    np.savetxt(RES_DIR / f"var_1_phi_hat.csv", res_var_1.phi_hat, delimiter=",")
-    logger.info(f"Saved VAR(1) phi_hat to {RES_DIR / f'{res_var_1.name}_phi_hat.csv'} with shape {res_var_1.phi_hat.shape}.")
+    np.savetxt(RES_DIR / f"{res_var_1.name}_phi_hat.csv", res_var_1.phi_hat, delimiter=",")
+    logger.info(f"Saved {res_var_1.name} phi_hat to {RES_DIR / f'{res_var_1.name}_phi_hat.csv'} with shape {res_var_1.phi_hat.shape}.")
 
     # Extract forecast dates for backtesting
     dates_to_test = y_test.index
@@ -125,7 +125,7 @@ def train_and_test(horizons: list[int], y: pd.DataFrame) -> pd.DataFrame:
         df_mse = df_mse.merge(df_single_mse, on='h')
 
     RES_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = RES_DIR / "var_mse.csv"
+    out_path = RES_DIR / "VAR_mse.csv"
 
     df_mse.to_csv(out_path, index=False)
     logger.info(f"Successfully saved MSE table to {out_path}.")

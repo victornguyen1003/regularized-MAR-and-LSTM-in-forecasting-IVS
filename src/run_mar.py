@@ -211,7 +211,7 @@ def main():
     # Load and split data
     logger.info("Loading and splitting data...")
 
-    Phi_hat = np.loadtxt(RES_DIR / 'var_1_phi_hat.csv', delimiter=',')
+    Phi_hat = np.loadtxt(RES_DIR / 'VAR(1)_phi_hat.csv', delimiter=',')
 
     transformed_df = load_transformed_data(PROCESSED_DATA_DIR / 'transformed_data.csv')
     X_train, X_test = split_train_test_data(transformed_df)
