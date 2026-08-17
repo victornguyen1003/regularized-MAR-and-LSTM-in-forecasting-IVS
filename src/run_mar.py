@@ -119,6 +119,10 @@ class MAR_Results:
         self.squared_errors: dict[int, list[float]] = {h: [] for h in FORECAST_HORIZONS}
         self.mse: dict[int, float] = {}
 
+    def set_params(self, A: np.ndarray | None = None, B: np.ndarray | None = None):
+        self.A = A
+        self.B = B
+
     def train(self, X_train_centered: pd.DataFrame, Phi_hat: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         dim_moneyness = X_train_centered.columns.get_level_values('moneyness').nunique()
         dim_tenor = X_train_centered.columns.get_level_values('tenor').nunique()
@@ -180,7 +184,7 @@ class MAR_Results:
         return self.mse[h]
     
 
-    def test(self, dates_to_test: pd.DatetimeIndex, X_centered: pd.DataFrame) -> pd.DataFrame:
+    def test(self, dates_to_test: pd.DatetimeIndex, X_centered: pd.DataFrame, training_set: bool = False) -> pd.DataFrame:
         """Compute the MSE table for MAR models for a given list of forecast horizons."""
 
         logger.info("Starting testing...")
@@ -193,7 +197,8 @@ class MAR_Results:
 
         df_mse = pd.DataFrame(self.mse.items(), columns=['h', self.name])
         RES_DIR.mkdir(parents=True, exist_ok=True)
-        out_path = RES_DIR / f"{self.name}_mse.csv"
+        out_name = f"{self.name}_mse.csv" if not training_set else f"{self.name}_training_mse.csv"
+        out_path = RES_DIR / out_name
         df_mse.to_csv(out_path, index=False)
         logger.info(f"Successfully saved MSE table to {out_path}.")
 
@@ -217,7 +222,6 @@ def main():
     X_train, X_test = split_train_test_data(transformed_df)
     X_train_mean = np.mean(X_train, axis=0)
     X_train_centered, X_test_centered, X_centered = X_train - X_train_mean, X_test - X_train_mean, transformed_df - X_train_mean
-
 
     # Train MAR model
     logger.info("Training MAR model...")
