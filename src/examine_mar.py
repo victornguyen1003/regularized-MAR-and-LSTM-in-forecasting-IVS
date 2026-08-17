@@ -16,7 +16,7 @@ def main():
         level=logging.INFO,
         format='%(name)s - %(levelname)s - %(message)s',
         filename=RES_DIR/'MAR_examination.log',
-        filemode='a',
+        filemode='w',
     )
     logger = logging.getLogger(__name__)
 
@@ -53,6 +53,12 @@ def main():
         dist = np.linalg.norm(param - id_matrix, ord='fro')
         distances[param_name] = dist
         logger.info(f"Distance from {param_name} to identity matrix of shape {id_matrix.shape}: {dist}")
+
+    eigenvalues_df = pd.DataFrame({k: pd.Series(v).sort_values(ascending=False) for k, v in eigenvalues.items()})
+    eigenvalues_df.to_csv(RES_DIR / "MAR_eigenvalues.csv", index=False)
+
+    distances_df = pd.DataFrame([distances])
+    distances_df.to_csv(RES_DIR / "MAR_coefficient_matrix_distance_from_identity.csv", index=False)
 
     # Compute MAR training errors
     dates_to_test = X_train_centered.index
