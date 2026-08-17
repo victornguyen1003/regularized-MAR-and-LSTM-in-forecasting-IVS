@@ -150,21 +150,21 @@ def main():
     A_lse = np.loadtxt(RES_DIR / 'A_lse.csv', delimiter=',')
     B_lse = np.loadtxt(RES_DIR / 'B_lse.csv', delimiter=',')
 
-    # # Search for alphas from coare grid
-    # alpha_parse_grid_A = np.logspace(-5, 5, 11)
-    # alpha_parse_grid_B = np.logspace(-5, 5, 11)
+    # Search for alphas from coare grid
+    alpha_parse_grid_A = np.logspace(-5, 5, 11)
+    alpha_parse_grid_B = np.logspace(-5, 5, 11)
 
-    # logger.info(f"Searching for optimal alpha values for Regularized MAR from coarse grid {alpha_parse_grid_A} for alpha_A and {alpha_parse_grid_B} for alpha_B...")
-    # alpha_A_parse, alpha_B_parse = mar_res.search_alpha(X_train_centered, alpha_parse_grid_A, alpha_parse_grid_B, A_lse, B_lse)
-    # logger.info(f"Optimal alpha values found from coarse grid: alpha_A={alpha_A_parse}, alpha_B={alpha_B_parse}")
+    logger.info(f"Searching for optimal alpha values for Regularized MAR from coarse grid {alpha_parse_grid_A} for alpha_A and {alpha_parse_grid_B} for alpha_B...")
+    alpha_A_parse, alpha_B_parse = mar_res.search_alpha(X_train_centered, alpha_parse_grid_A, alpha_parse_grid_B, A_lse, B_lse)
+    logger.info(f"Optimal alpha values found from coarse grid: alpha_A={alpha_A_parse}, alpha_B={alpha_B_parse}")
 
-    # # Search for alphas from fine grid
-    # alpha_fine_grid_A = np.logspace(np.log10(alpha_A_parse)-1, np.log10(alpha_A_parse)+1, 5)
-    # alpha_fine_grid_B = np.logspace(np.log10(alpha_B_parse)-1, np.log10(alpha_B_parse)+1, 5)
+    # Search for alphas from fine grid
+    alpha_fine_grid_A = np.logspace(np.log10(alpha_A_parse)-1, np.log10(alpha_A_parse)+1, 5)
+    alpha_fine_grid_B = np.logspace(np.log10(alpha_B_parse)-1, np.log10(alpha_B_parse)+1, 5)
 
-    # logger.info(f"Searching for optimal alpha values for Regularized MAR from fine grid {alpha_fine_grid_A} for alpha_A and {alpha_fine_grid_B} for alpha_B...")
-    # alpha_A_fine, alpha_B_fine = mar_res.search_alpha(X_train_centered, alpha_fine_grid_A, alpha_fine_grid_B, A_lse, B_lse)
-    # logger.info(f"Optimal alpha values found from fine grid: alpha_A={alpha_A_fine}, alpha_B={alpha_B_fine}")
+    logger.info(f"Searching for optimal alpha values for Regularized MAR from fine grid {alpha_fine_grid_A} for alpha_A and {alpha_fine_grid_B} for alpha_B...")
+    alpha_A_fine, alpha_B_fine = mar_res.search_alpha(X_train_centered, alpha_fine_grid_A, alpha_fine_grid_B, A_lse, B_lse)
+    logger.info(f"Optimal alpha values found from fine grid: alpha_A={alpha_A_fine}, alpha_B={alpha_B_fine}")
 
 
     # Train MAR model
@@ -179,7 +179,7 @@ def main():
 
 
     # Test MAR model
-    logger.info("Testing MAR model...")
+    logger.info("Testing Regularized MAR model...")
     dates_to_test = X_test_centered.index
     mse_df = mar_res.test(dates_to_test, X_centered)
 
