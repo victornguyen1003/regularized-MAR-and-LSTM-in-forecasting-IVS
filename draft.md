@@ -3,69 +3,38 @@
 ## Structure
 
 ---
+
 marp: true
+----------
+
 theme: gaia
+
 paginate: true
+
 style: |
-  section.table-slide {
-    display: flex;
-    flex-direction: column;
-  }
-  section.table-slide .table-middle {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  section.table-slide .table-middle table {
-    margin: 0;
-  }
-  section.table-slide .table-footnote {
-    flex-shrink: 0;
-    margin-top: 0.5em;
-    font-size: 0.8em;
-    text-align: left;
-    opacity: 0.85;
-  }
-  section.image-slide {
-    display: flex;
-    flex-direction: column;
-  }
-  section.image-slide h2 {
-    flex-shrink: 0;
-    margin-bottom: 0;
-  }
-  section.image-slide .image-middle {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    min-height: 0;
-  }
-  section.image-slide .image-middle p {
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-  }
-  section.image-slide .image-middle img {
-    display: block;
-    margin: 0 auto;
-  }
-  section.bs-slide .bs-legend {
-    display: flex;
-    justify-content: space-evenly;
-    gap: 0.5rem;
-    padding: 0 2rem;
-  }
-  section.bs-slide .bs-legend > div {
-    flex: 0 1 auto;
-    min-width: 8em;
-  }
----
+
+  secton.table-slide
+
+  section.table-slide .table-middle
+
+  section.table-slide .table-middle table
+
+  section.table-slide .table-footnote
+
+  section.image-slide
+
+  section.image-slide h2
+
+  section.image-slide .image-middle
+
+  section.image-slide .image-middle p
+
+  section.image-slide .image-middle img
+
+  section.bs-slide .bs-legend
+
+  section.bs-slide .bs-legend > div
+
 <!-- _class: lead -->
 
 # Regularized MAR and LSTM in forecasting IV surfaces
@@ -118,36 +87,3 @@ $$
 and
 
 <div class="bs-legend">
-
-```text
-├── config/
-│   └── environment.yml        # Conda environment dependencies
-├── data/raw/                  # Original, untouched yearly datasets
-├── demo/                      # Demo code and report
-│   ├── pics/                  # Figures 
-│   ├── demo.ipynb             # Prototype script
-│   └── report.md              # Findings
-├── notebooks                  # Notebooks for EDA and modeling
-├── src/                       # Production-level code
-├── reports/                   # Figures and finding reports
-└── README.md                  # Project overview
-```
-
-## Run locally
-
-Prerequisites: Conda
-
-1. Create conda environment:
-   ```bash
-   conda env create -p ./.env -f config/environment.yml
-   ```
-2. Activate environment:
-   ```bash
-   conda activate ./.env
-   ```
-
-## References
-
-* Jiang, H., Shen, B., Li, Y., & Gao, Z. (2024). Regularized estimation of high-dimensional matrix-variate autoregressive models
-* Chen, R., Xiao, H., & Yang, D. (2018). Autoregressive models for matrix-valued time series
-* Li, F.-F., Johnson, J., & Yeung, S. (2017). Lecture 10: Recurrent Neural Networks. CS231n: Convolutional Neural Networks for Visual Recognition (Spring 2017), Stanford University
