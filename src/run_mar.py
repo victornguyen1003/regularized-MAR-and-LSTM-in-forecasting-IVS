@@ -4,11 +4,14 @@ import numpy as np
 from pathlib import Path
 from datetime import datetime
 
-from config import PROCESSED_DATA_DIR, RES_DIR, MAX_ITERATIONS, CONVERGENCE_THRESHOLD, FORECAST_HORIZONS
-from util import load_transformed_data, split_train_test_data
+from config import PROCESSED_DATA_DIR, RES_DIR, FORECAST_HORIZONS
+from util import load_transformed_data, save_csv
 
 import logging
 logger = logging.getLogger(__name__)
+
+res_dir = RES_DIR / "MAR"
+res_dir.mkdir(parents=True, exist_ok=True)
 
 
 def _take_inverse(M):
@@ -63,7 +66,7 @@ def _project(Phi_hat: np.ndarray, m: int, n: int) -> tuple[np.ndarray, np.ndarra
     return A_proj, B_proj    
 
 
-def _iterate(X_train_centered: pd.DataFrame, A_proj: np.ndarray, B_proj: np.ndarray, max_iterations: int = MAX_ITERATIONS, convergence_threshold: float = CONVERGENCE_THRESHOLD):
+def _iterate(X_train_centered: pd.DataFrame, A_proj: np.ndarray, B_proj: np.ndarray, max_iterations: int = 10000, convergence_threshold: float = 1e-4) -> tuple[np.ndarray, np.ndarray]:
     """Iteratively update the coefficient matrix estimators A and B until convergence.
     Args:
         X_train_centered: training data with mean subtracted
@@ -115,11 +118,12 @@ class MAR_Results:
         self.A = A
         self.B = B
         self.name = "MAR(1)"
+        
         self.forecasts: dict[int, list[float]] = {h: [] for h in FORECAST_HORIZONS}
         self.squared_errors: dict[int, list[float]] = {h: [] for h in FORECAST_HORIZONS}
         self.mse: dict[int, float] = {}
 
-    def set_params(self, A: np.ndarray | None = None, B: np.ndarray | None = None):
+    def set_params(self, A: np.ndarray, B: np.ndarray):
         self.A = A
         self.B = B
 
@@ -130,6 +134,11 @@ class MAR_Results:
         A_proj, B_proj = _project(Phi_hat, dim_moneyness, dim_tenor)
         A_lse, B_lse = _iterate(X_train_centered, A_proj, B_proj)
         self.A, self.B = A_lse, B_lse
+
+        np.savetxt(res_dir / 'A_lse.csv', A_lse, delimiter=',')
+        logger.info(f"Successfully saved to {res_dir / 'A_lse.csv'} with shape {A_lse.shape}")
+        np.savetxt(res_dir / 'B_lse.csv', B_lse, delimiter=',')
+        logger.info(f"Successfully saved to {res_dir / 'B_lse.csv'} with shape {B_lse.shape}")
 
         return A_lse, B_lse
 
@@ -142,52 +151,35 @@ class MAR_Results:
 
         return forecast
 
-    def compute_squared_error(self, h: int, d: datetime, X_centered: pd.DataFrame):
-        """Compute the squared error for a given forecast horizon and date.
+    def compute_squared_error(self, horizon: int, date: datetime, X_centered: pd.DataFrame):
+        """Compute the squared error for a given forecast horizon and date"""
+        if not date in X_centered.index:
+            logger.error(f"Date {date} not found in backtesting data")
+            raise ValueError(f"Date {date} not found in backtesting data")
 
-        Args:
-            h: forecast horizon
-            d: date to forecast
-            y: data to backtest
-        """
-        if not d in X_centered.index:
-            logger.error(f"Date {d} not found in backtesting data.")
-            raise ValueError(f"Date {d} not found in backtesting data.")
-
-        actual_X = X_centered.loc[d].unstack('tenor').values
-
-        start_index = X_centered.index.get_loc(d)-h
+        start_index = X_centered.index.get_loc(date)-horizon
         if start_index < 0:
-            logger.warning(f"Not enough data to backtest for horizon {h}.")
+            logger.warning(f"Not enough data to backtest for date {date} - horizon {horizon}")
             return
         start_date = X_centered.index[start_index]
         
         input = X_centered.loc[start_date].unstack('tenor').values
-        # print(f"input: {input}, A: {self.A}, B: {self.B}") # Debugging line to check values
-        # print(f"input shape: {input.shape}, A shape: {self.A.shape}, B shape: {self.B.shape}") # Debugging line to check shapes
-        prediction = self.forecast(input, steps=h)
+        prediction = self.forecast(input, steps=horizon)
+        actual_X = X_centered.loc[date].unstack('tenor').values
 
-        self.forecasts[h].append(prediction)
-        self.squared_errors[h].append(np.linalg.norm(actual_X - prediction, ord='fro')**2)
+        self.forecasts[horizon].append(prediction)
+        self.squared_errors[horizon].append((actual_X - prediction).flatten()**2)
 
-    def compute_mse(self, h: int) -> float:
-        """Compute the mean squared error from the current sum of squared errors for a given forecast horizon.
+    def compute_mse(self, horizon: int) -> float:
+        """Compute the MSE from current SSE for a given forecast horizon"""
+        if not horizon in list(self.forecasts.keys()):
+            logger.error(f"Forecast horizon {horizon} not found.")
+            raise KeyError(f"Forecast horizon {horizon} not found.")
 
-        Args:
-            h: forecast horizon
-        """
-        if not h in list(self.forecasts.keys()):
-            logger.error(f"Forecast horizon {h} not found.")
-            raise KeyError(f"Forecast horizon {h} not found.")
-
-        self.mse[h] = np.mean(self.squared_errors[h])
-        return self.mse[h]
+        self.mse[horizon] = np.mean(self.squared_errors[horizon])
+        return self.mse[horizon]
     
-
-    def test(self, dates_to_test: pd.DatetimeIndex, X_centered: pd.DataFrame, training_set: bool = False) -> pd.DataFrame:
-        """Compute the MSE table for MAR models for a given list of forecast horizons."""
-
-        logger.info("Starting testing...")
+    def test(self, dates_to_test: pd.DatetimeIndex, X_centered: pd.DataFrame, training_set: bool = False):
         for h in FORECAST_HORIZONS:
             for d in dates_to_test:
                 self.compute_squared_error(h, d, X_centered)
@@ -196,53 +188,31 @@ class MAR_Results:
             logger.debug(f"MSE of {self.name} for horizon {h}: {self.mse[h]}.")
 
         df_mse = pd.DataFrame(self.mse.items(), columns=['h', self.name])
-        RES_DIR.mkdir(parents=True, exist_ok=True)
         out_name = f"{self.name}_mse.csv" if not training_set else f"{self.name}_training_mse.csv"
-        out_path = RES_DIR / out_name
-        df_mse.to_csv(out_path, index=False)
-        logger.info(f"Successfully saved MSE table to {out_path}.")
+        save_csv(df_mse, res_dir / out_name)
 
         return df_mse
 
 
 def main():
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(name)s - %(levelname)s - %(message)s'
-    )
-    logger = logging.getLogger(__name__)
-
-
-    # Load and split data
-    logger.info("Loading and splitting data...")
-
-    Phi_hat = np.loadtxt(RES_DIR / 'VAR(1)_phi_hat.csv', delimiter=',')
-
-    transformed_df = load_transformed_data(PROCESSED_DATA_DIR / 'transformed_data.csv')
-    X_train, X_test = split_train_test_data(transformed_df)
-    X_train_mean = np.mean(X_train, axis=0)
-    X_train_centered, X_test_centered, X_centered = X_train - X_train_mean, X_test - X_train_mean, transformed_df - X_train_mean
-
-    # Train MAR model
+    logger.info("Loading data...")
+    Phi_hat = np.loadtxt(RES_DIR / 'VAR' / 'VAR(1)_phi_hat.csv', delimiter=',')
+    X_centered = load_transformed_data(PROCESSED_DATA_DIR / 'centered_full_data.csv')
+    X_train_centered = load_transformed_data(PROCESSED_DATA_DIR / 'centered_train_data.csv')
+    X_test_centered = load_transformed_data(PROCESSED_DATA_DIR / 'centered_test_data.csv')
+    
     logger.info("Training MAR model...")
     mar_res = MAR_Results()
     A_lse, B_lse = mar_res.train(X_train_centered, Phi_hat)
 
-    # Save coefficient matrix estimators
-    np.savetxt(RES_DIR / 'A_lse.csv', A_lse, delimiter=',')
-    logger.info(f"Successfully saved A_lse to {RES_DIR / 'A_lse.csv'} with shape {A_lse.shape}")
-
-    np.savetxt(RES_DIR / 'B_lse.csv', B_lse, delimiter=',')
-    logger.info(f"Successfully saved B_lse to {RES_DIR / 'B_lse.csv'} with shape {B_lse.shape}")
-
-
-    # Test MAR model
     logger.info("Testing MAR model...")
     dates_to_test = X_test_centered.index
     mse_df = mar_res.test(dates_to_test, X_centered)
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO,
+                        format='%(name)s - %(levelname)s - %(message)s')
     main()
 
 

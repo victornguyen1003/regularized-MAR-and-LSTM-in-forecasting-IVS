@@ -8,8 +8,11 @@ from sklearn.model_selection import TimeSeriesSplit
 from pathlib import Path
 from datetime import datetime
 
-from config import PROCESSED_DATA_DIR, RES_DIR, MAX_ITERATIONS, CONVERGENCE_THRESHOLD, FORECAST_HORIZONS
-from util import load_transformed_data, split_train_test_data
+from config import PROCESSED_DATA_DIR, RES_DIR, FORECAST_HORIZONS
+from util import load_transformed_data
+
+res_dir = RES_DIR / "MAR"
+res_dir.mkdir(parents=True, exist_ok=True)
 
 import logging
 logger = logging.getLogger(__name__)
@@ -49,7 +52,7 @@ def _iterate(A_0: np.ndarray, B_0: np.ndarray, alpha_A: float, alpha_B: float, m
 
         # Check convergence
         delta_A, delta_B = np.linalg.norm(A - A_new), np.linalg.norm(B - B_new)
-        if delta_A < CONVERGENCE_THRESHOLD and delta_B < CONVERGENCE_THRESHOLD:
+        if delta_A < 1e-4 and delta_B < 1e-4:
             does_converge = True
             logger.info(f"Converged after {iteration+1} iterations.")
             A, B = A_new, B_new
@@ -97,7 +100,7 @@ class Regularized_MAR_Results(MAR_Results):
                         logger.debug(f"A shape: {A.shape}, B shape: {B.shape}, forecast shape: {forecast.shape}, actual shape: {actual.shape}")
 
                         forecast = A @ forecast @ B.T
-                        mse_one_fold.append(np.linalg.norm(forecast - actual, ord='fro')**2)
+                        mse_one_fold.append(np.mean((forecast - actual).flatten()**2))
 
                     mse_all_folds.append(np.mean(mse_one_fold))
 
@@ -115,77 +118,50 @@ class Regularized_MAR_Results(MAR_Results):
     def train(self, Y_train_centered: pd.DataFrame, A_0: np.ndarray, B_0: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         logger.info(f"Training Regularized MAR with alpha_A={self.alpha_A}, alpha_B={self.alpha_B}...")
 
-        A, B = _iterate(A_0, B_0, self.alpha_A, self.alpha_B, max_iter=1000, max_iter_elastic_net=1000, Y_train=Y_train_centered)
+        A, B = _iterate(A_0, B_0, self.alpha_A, self.alpha_B, max_iter=3000, max_iter_elastic_net=3000, Y_train=Y_train_centered)
         self.A, self.B = A, B
+
+        np.savetxt(res_dir / 'regularized_A.csv', A, delimiter=',')
+        logger.info(f"Successfully saved to {res_dir / 'regularized_A.csv'} with shape {A.shape}")
+        np.savetxt(res_dir / 'regularized_B.csv', B, delimiter=',')
+        logger.info(f"Successfully saved to {res_dir / 'regularized_B.csv'} with shape {B.shape}")
 
         return A, B
 
 
 def main():
-    print(f"Starting regularized MAR training and testing at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}...")
-
-    logging.basicConfig(
-        filename = RES_DIR / f"regularized_MAR.log",
-        filemode = 'a',
-        level=logging.INFO,
-        format='%(asctime)s - %(levelname)s - %(message)s',
-    )
-
-    logging.captureWarnings(True)
-    logger = logging.getLogger(__name__)
-
+    print(f"Starting regularized MAR modeling at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}...")
 
     # Load and split data
-    logger.info("Loading and splitting data...")
+    logger.info("Loading data...")
+    X_centered = load_transformed_data(PROCESSED_DATA_DIR / 'centered_full_data.csv')
+    X_train_centered = load_transformed_data(PROCESSED_DATA_DIR / 'centered_train_data.csv')
+    X_test_centered = load_transformed_data(PROCESSED_DATA_DIR / 'centered_test_data.csv')
 
-    transformed_df = load_transformed_data(PROCESSED_DATA_DIR / 'transformed_data.csv')
-    X_train, X_test = split_train_test_data(transformed_df)
-    X_train_mean = np.mean(X_train, axis=0)
-    X_train_centered, X_test_centered, X_centered = X_train - X_train_mean, X_test - X_train_mean, transformed_df - X_train_mean
-
-
-    # Fine-tune hyperparameters 
-    logger.info("Fine-tuning Regularized MAR hyperparameters alpha_A and alpha_B...")
-    mar_res = Regularized_MAR_Results(0.01, 0.01)
-    A_lse = np.loadtxt(RES_DIR / 'A_lse.csv', delimiter=',')
-    B_lse = np.loadtxt(RES_DIR / 'B_lse.csv', delimiter=',')
-
-    # Search for alphas from coare grid
-    alpha_parse_grid_A = np.logspace(-5, 5, 11)
-    alpha_parse_grid_B = np.logspace(-5, 5, 11)
-
-    logger.info(f"Searching for optimal alpha values for Regularized MAR from coarse grid {alpha_parse_grid_A} for alpha_A and {alpha_parse_grid_B} for alpha_B...")
-    alpha_A_parse, alpha_B_parse = mar_res.search_alpha(X_train_centered, alpha_parse_grid_A, alpha_parse_grid_B, A_lse, B_lse)
-    logger.info(f"Optimal alpha values found from coarse grid: alpha_A={alpha_A_parse}, alpha_B={alpha_B_parse}")
-
-    # Search for alphas from fine grid
-    alpha_fine_grid_A = np.logspace(np.log10(alpha_A_parse)-1, np.log10(alpha_A_parse)+1, 5)
-    alpha_fine_grid_B = np.logspace(np.log10(alpha_B_parse)-1, np.log10(alpha_B_parse)+1, 5)
-
-    logger.info(f"Searching for optimal alpha values for Regularized MAR from fine grid {alpha_fine_grid_A} for alpha_A and {alpha_fine_grid_B} for alpha_B...")
-    alpha_A_fine, alpha_B_fine = mar_res.search_alpha(X_train_centered, alpha_fine_grid_A, alpha_fine_grid_B, A_lse, B_lse)
-    logger.info(f"Optimal alpha values found from fine grid: alpha_A={alpha_A_fine}, alpha_B={alpha_B_fine}")
-
-
-    # Train MAR model
+    # Train Regularized MAR model
     logger.info("Training Regularized MAR model...")
+
+    mar_res = Regularized_MAR_Results(0.01, 0.01)
+    A_lse = np.loadtxt(res_dir / 'A_lse.csv', delimiter=',')
+    B_lse = np.loadtxt(res_dir / 'B_lse.csv', delimiter=',')
     regularized_A, regularized_B = mar_res.train(X_train_centered, A_lse, B_lse)
 
-    np.savetxt(RES_DIR / 'regularized_A.csv', regularized_A, delimiter=',')
-    logger.info(f"Successfully saved regularized A to {RES_DIR / 'regularized_A.csv'} with shape {regularized_A.shape}")
 
-    np.savetxt(RES_DIR / 'regularized_B.csv', regularized_B, delimiter=',')
-    logger.info(f"Successfully saved regularized B to {RES_DIR / 'regularized_B.csv'} with shape {regularized_B.shape}")
-
-
-    # Test MAR model
+    # Test Regularized MAR model
     logger.info("Testing Regularized MAR model...")
+
     dates_to_test = X_test_centered.index
     mse_df = mar_res.test(dates_to_test, X_centered)
 
-    print(f"Finished regularized MAR training and testing at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
+    print(f"Finished Regularized MAR modeling at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
+
 
 if __name__ == "__main__":
+    logging.basicConfig(filename = res_dir / f"modeling_regularized_MAR.log",
+                        filemode = 'w',
+                        level=logging.INFO,
+                        format='%(asctime)s - %(levelname)s - %(message)s',)
+    logging.captureWarnings(True)
     main()
 
 

@@ -1,23 +1,124 @@
-# Regularized MAR and LSTM in Forecasting IV Surfaces
-
-## Introduction
-This project compares the performance of deep learning architecture LSTM against the econometric baselines VAR, MAR, and MAR with L1 regularization in forecasting Implied Volatility (IV) surface for SPX options. 
-
-As the project is still going, please first find the demo prototype script and report in the demo folder.
-
-## Methodology
-* **VAR vs. MAR:** The baseline VAR(1) and VAR(15) models struggle to capture structural relationships between rows and columns while requiring a massive parameter space of $O(m^2n^2)$. The MAR(1) model preserves the natural $m \times n$ matrix structure, reducing the parameter space to $O(m^2+n^2)$ through the equation $X_t = A X_{t-1} B^\top + E_t$.  
-* **MAR Estimation:** Optimal parameters are found utilizing Projection (PROJ) via Singular Value Decomposition and Iterated Least Squares (ILS).  
-* **Regularized MAR (LASSO):** L1 penalties are applied to further reduce the number of parameters and prevent prediction explosions for long-horizon forecasts of MAR due to the ILS method, which easily yields an eigenvalue greater than 1.
-* **LSTM:** Both Vanilla and Residual LSTM architectures are tested where the Residual LSTM predicts the daily change $\Delta_t = y_t - y_{t-1}$ rather than raw levels as IV has shown to follow a random walk. Dropout and weight decay are implemented while the hidden state dimension is reduced to prevent overfitting, with an increase in the number of epochs to offset the effect on learning.
-
-## Results
-* **Random Walk:** VAR(15) showed the worst performance due to overfitting, which suggests IV is a martingale
-* **Short-Term vs. Long-Term:** MAR(1) slightly outperformed VAR(1) for 1-day and 5-day horizons, but experienced exponentially exploding MSFE on longer horizons.
-* **Penalty Trade-offs:** Regularized MAR (LASSO) with smaller penalties improved short-term forecasts but failed to avoid long-term explosion. Conversely, larger penalties successfully shrank the spectral radius to mitigate long-term explosion, but caused underfitting in the short term.  
-* **Best Overall Model:** Residual LSTM achieved similar short-term results to the lightly penalized MAR LASSO but remained significantly more stable across extended multi-day horizons.
+# Regularized MAR and Residual LSTM in Forecasting Implied Volatility Surfaces
 
 ## Structure
+
+---
+marp: true
+theme: gaia
+paginate: true
+style: |
+  section.table-slide {
+    display: flex;
+    flex-direction: column;
+  }
+  section.table-slide .table-middle {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  section.table-slide .table-middle table {
+    margin: 0;
+  }
+  section.table-slide .table-footnote {
+    flex-shrink: 0;
+    margin-top: 0.5em;
+    font-size: 0.8em;
+    text-align: left;
+    opacity: 0.85;
+  }
+  section.image-slide {
+    display: flex;
+    flex-direction: column;
+  }
+  section.image-slide h2 {
+    flex-shrink: 0;
+    margin-bottom: 0;
+  }
+  section.image-slide .image-middle {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 0;
+  }
+  section.image-slide .image-middle p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+  section.image-slide .image-middle img {
+    display: block;
+    margin: 0 auto;
+  }
+  section.bs-slide .bs-legend {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 0.5rem;
+    padding: 0 2rem;
+  }
+  section.bs-slide .bs-legend > div {
+    flex: 0 1 auto;
+    min-width: 8em;
+  }
+---
+<!-- _class: lead -->
+
+# Regularized MAR and LSTM in forecasting IV surfaces
+
+---
+
+### References
+
+Jiang, H., Shen, B., Li, Y., & Gao, Z. (2024). Regularized estimation of high-dimensional matrix-variate autoregressive models
+
+Chen, R., Xiao, H., & Yang, D. (2018). Autoregressive models for matrix-valued time series
+
+Li, F.-F., Johnson, J., & Yeung, S. (2017). Lecture 10: Recurrent Neural Networks. CS231n: Convolutional Neural Networks for Visual Recognition (Spring 2017), Stanford University
+
+---
+
+### Options Pricing Overview
+
+- Option: a financial instrument that gives the owner the right, but not the obligation, to buy/sell an underlying asset at a strike price
+
+  - Strike price
+  - Time to maturity
+- Two types: call options (right to buy) and put options (right to sell)
+- European-style options: can only be exercised at expiration
+
+E.g. A European-style, $90, 30-day expiration, call option gives you the right to buy the underlying stock at $90 regardless of its market price at expiration
+
+---
+
+<!-- _class: bs-slide -->
+
+### Black-Scholes's Model
+
+$$
+C = S_0 N(d_1) - K e^{-rT} N(d_2)
+$$
+
+$$
+P = K e^{-rT} N(-d_2) - S_0N(-d_1)
+$$
+
+where
+
+$$
+d_1 = \frac{\ln(S_0/K) + (r + \tfrac{1}{2}\sigma^2)T}{\sigma\sqrt{T}},
+\qquad
+d_2 = d_1 - \sigma\sqrt{T}
+$$
+
+and
+
+<div class="bs-legend">
+
 ```text
 ├── config/
 │   └── environment.yml        # Conda environment dependencies
@@ -33,16 +134,17 @@ As the project is still going, please first find the demo prototype script and r
 ```
 
 ## Run locally
+
 Prerequisites: Conda
 
-1. Create conda environment: 
-    ```bash
-    conda env create -p ./.env -f config/environment.yml
-    ```
-2. Activate environment: 
-    ```bash
-    conda activate ./.env
-    ```
+1. Create conda environment:
+   ```bash
+   conda env create -p ./.env -f config/environment.yml
+   ```
+2. Activate environment:
+   ```bash
+   conda activate ./.env
+   ```
 
 ## References
 
