@@ -12,3 +12,4 @@ dependencies:
 - statsmodels
 - scikit-learn
 - pytorch
+- lightning

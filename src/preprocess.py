@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 
 from config import RAW_DATA_DIR, PROCESSED_DATA_DIR
-from util import split_center_data
 
 from pathlib import Path
 
@@ -58,13 +57,17 @@ def split_center_data(df: pd.DataFrame, train_proportion: float = 0.8) -> tuple[
     train_mean = np.mean(df_train, axis=0)
 
     datasets = [df, df_train, df_test]
-    names = ['centered_full_data', 'centered_train_data', 'centered_test_data']
+    names = ['full_data', 'train_data', 'test_data']
     for dataset, name in zip(datasets, names):
+        uncentered_out_path = PROCESSED_DATA_DIR / f"uncentered_{name}.csv"
+        dataset.to_csv(uncentered_out_path)
+        logger.info(f"Successfully saved uncentered {name} to {uncentered_out_path} with shape {dataset.shape}")
+
         dataset_centered = dataset - train_mean
 
-        out_path = PROCESSED_DATA_DIR / f"{name}.csv"
-        dataset_centered.to_csv(out_path)
-        logger.info(f"Successfully saved centered {name} to {out_path} with shape {dataset_centered.shape}")
+        centered_out_path = PROCESSED_DATA_DIR / f"centered_{name}.csv"
+        dataset_centered.to_csv(centered_out_path)
+        logger.info(f"Successfully saved centered {name} to {centered_out_path} with shape {dataset_centered.shape}")
 
     return df_train, df_test
 
