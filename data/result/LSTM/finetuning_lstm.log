@@ -1,0 +1,330 @@
+2026-08-29 16:51:15,174 - INFO - Loading training data...
+2026-08-29 16:51:15,209 - INFO - Successfully loaded transformed data from /home/victor/Projects/regularized-MAR-vs-residual-LSTM-in-forcasting-IVS/data/processed/uncentered_train_data.csv with shape (2117, 63)
+2026-08-29 16:51:15,209 - INFO - Starting finetuning VanillaLSTM...
+2026-08-29 16:51:15,209 - INFO - Iteration 1/20...
+2026-08-29 16:51:15,209 - INFO - Current hyperparameters: {'hidden_dim': 32, 'lr': 0.008816604158295086, 'weight_decay': 0.00550452427864028, 'dropout': 0.3897721707517817, 'num_layers': 2, 'batch_size': 16, 'seq_len': 40, 'max_epochs': 10}
+2026-08-29 16:51:15,233 - INFO - Processing fold 0
+2026-08-29 16:51:20,031 - INFO - Processing fold 1
+2026-08-29 16:51:28,334 - INFO - Processing fold 2
+2026-08-29 16:51:41,113 - INFO - Processing fold 3
+2026-08-29 16:51:57,357 - INFO - Processing fold 4
+2026-08-29 16:52:15,345 - INFO - Current MSE: 13.67247178402359
+2026-08-29 16:52:15,345 - INFO - Iteration 2/20...
+2026-08-29 16:52:15,346 - INFO - Current hyperparameters: {'hidden_dim': 128, 'lr': 0.004659167162760368, 'weight_decay': 0.005278109136472075, 'dropout': 0.4440112565544937, 'num_layers': 2, 'batch_size': 256, 'seq_len': 30, 'max_epochs': 50}
+2026-08-29 16:52:15,350 - INFO - Processing fold 0
+2026-08-29 16:52:26,897 - INFO - Processing fold 1
+2026-08-29 16:52:50,148 - INFO - Processing fold 2
+2026-08-29 16:53:26,247 - INFO - Processing fold 3
+2026-08-29 16:54:06,188 - INFO - Processing fold 4
+2026-08-29 16:54:59,016 - INFO - Current MSE: 9.994002442313807
+2026-08-29 16:54:59,016 - INFO - Iteration 3/20...
+2026-08-29 16:54:59,016 - INFO - Current hyperparameters: {'hidden_dim': 128, 'lr': 0.0029514949658369944, 'weight_decay': 0.00866278210325771, 'dropout': 0.2340250127291073, 'num_layers': 2, 'batch_size': 32, 'seq_len': 50, 'max_epochs': 10}
+2026-08-29 16:54:59,019 - INFO - Processing fold 0
+2026-08-29 16:55:04,343 - INFO - Processing fold 1
+2026-08-29 16:55:13,445 - INFO - Processing fold 2
+2026-08-29 16:55:26,683 - INFO - Processing fold 3
+2026-08-29 16:55:44,066 - INFO - Processing fold 4
+2026-08-29 16:56:05,731 - INFO - Current MSE: 13.850112620888561
+2026-08-29 16:56:05,731 - INFO - Iteration 4/20...
+2026-08-29 16:56:05,732 - INFO - Current hyperparameters: {'hidden_dim': 16, 'lr': 0.00250233960897602, 'weight_decay': 0.003980654433874202, 'dropout': 0.4042091545109415, 'num_layers': 2, 'batch_size': 32, 'seq_len': 10, 'max_epochs': 30}
+2026-08-29 16:56:05,732 - INFO - Processing fold 0
+2026-08-29 16:56:07,784 - INFO - Processing fold 1
+2026-08-29 16:56:11,379 - INFO - Processing fold 2
+2026-08-29 16:56:16,596 - INFO - Processing fold 3
+2026-08-29 16:56:23,291 - INFO - Processing fold 4
+2026-08-29 16:56:31,755 - INFO - Current MSE: 13.155707753793047
+2026-08-29 16:56:31,755 - INFO - Iteration 5/20...
+2026-08-29 16:56:31,755 - INFO - Current hyperparameters: {'hidden_dim': 256, 'lr': 0.004458560190084471, 'weight_decay': 0.006054016593580937, 'dropout': 0.27343560941264755, 'num_layers': 2, 'batch_size': 256, 'seq_len': 20, 'max_epochs': 50}
+2026-08-29 16:56:31,759 - INFO - Processing fold 0
+2026-08-29 16:56:52,207 - INFO - Processing fold 1
+2026-08-29 16:57:33,429 - INFO - Processing fold 2
+2026-08-29 16:58:34,257 - INFO - Processing fold 3
+2026-08-29 16:59:54,663 - INFO - Processing fold 4
+2026-08-29 17:01:34,146 - INFO - Current MSE: 15.5329572303819
+2026-08-29 17:01:34,146 - INFO - Iteration 6/20...
+2026-08-29 17:01:34,146 - INFO - Current hyperparameters: {'hidden_dim': 16, 'lr': 0.0048562094864817015, 'weight_decay': 0.005023404140229424, 'dropout': 0.23052847616405092, 'num_layers': 2, 'batch_size': 32, 'seq_len': 40, 'max_epochs': 20}
+2026-08-29 17:01:34,147 - INFO - Processing fold 0
+2026-08-29 17:01:36,640 - INFO - Processing fold 1
+2026-08-29 17:01:41,281 - INFO - Processing fold 2
+2026-08-29 17:01:47,991 - INFO - Processing fold 3
+2026-08-29 17:01:56,901 - INFO - Processing fold 4
+2026-08-29 17:02:08,118 - INFO - Current MSE: 16.127860612838706
+2026-08-29 17:02:08,118 - INFO - Iteration 7/20...
+2026-08-29 17:02:08,118 - INFO - Current hyperparameters: {'hidden_dim': 256, 'lr': 0.004490413699845863, 'weight_decay': 0.0066083154185395164, 'dropout': 0.48278007154157265, 'num_layers': 1, 'batch_size': 64, 'seq_len': 20, 'max_epochs': 50}
+2026-08-29 17:02:08,120 - INFO - Processing fold 0
+2026-08-29 17:02:17,615 - INFO - Processing fold 1
+2026-08-29 17:02:35,243 - INFO - Processing fold 2
+2026-08-29 17:03:01,577 - INFO - Processing fold 3
+2026-08-29 17:03:36,144 - INFO - Processing fold 4
+2026-08-29 17:04:19,478 - INFO - Current MSE: 8.386598136261444
+2026-08-29 17:04:19,478 - INFO - Iteration 8/20...
+2026-08-29 17:04:19,478 - INFO - Current hyperparameters: {'hidden_dim': 16, 'lr': 0.007483664944249505, 'weight_decay': 0.008465625639834882, 'dropout': 0.47573836071673725, 'num_layers': 2, 'batch_size': 128, 'seq_len': 20, 'max_epochs': 30}
+2026-08-29 17:04:19,479 - INFO - Processing fold 0
+2026-08-29 17:04:20,770 - INFO - Processing fold 1
+2026-08-29 17:04:23,002 - INFO - Processing fold 2
+2026-08-29 17:04:26,427 - INFO - Processing fold 3
+2026-08-29 17:04:30,598 - INFO - Processing fold 4
+2026-08-29 17:04:35,935 - INFO - Current MSE: 12.156209461345076
+2026-08-29 17:04:35,935 - INFO - Iteration 9/20...
+2026-08-29 17:04:35,935 - INFO - Current hyperparameters: {'hidden_dim': 64, 'lr': 0.008503856286153915, 'weight_decay': 0.007086289481122694, 'dropout': 0.4211870336917972, 'num_layers': 2, 'batch_size': 256, 'seq_len': 10, 'max_epochs': 20}
+2026-08-29 17:04:35,936 - INFO - Processing fold 0
+2026-08-29 17:04:37,043 - INFO - Processing fold 1
+2026-08-29 17:04:38,639 - INFO - Processing fold 2
+2026-08-29 17:04:40,867 - INFO - Processing fold 3
+2026-08-29 17:04:43,608 - INFO - Processing fold 4
+2026-08-29 17:04:46,848 - INFO - Current MSE: 22.33421805506441
+2026-08-29 17:04:46,848 - INFO - Iteration 10/20...
+2026-08-29 17:04:46,848 - INFO - Current hyperparameters: {'hidden_dim': 128, 'lr': 0.005887928825717599, 'weight_decay': 0.008940244363413808, 'dropout': 0.43069982958310393, 'num_layers': 2, 'batch_size': 128, 'seq_len': 10, 'max_epochs': 30}
+2026-08-29 17:04:46,850 - INFO - Processing fold 0
+2026-08-29 17:04:49,787 - INFO - Processing fold 1
+2026-08-29 17:04:54,884 - INFO - Processing fold 2
+2026-08-29 17:05:02,290 - INFO - Processing fold 3
+2026-08-29 17:05:11,626 - INFO - Processing fold 4
+2026-08-29 17:05:23,083 - INFO - Current MSE: 10.141983486663344
+2026-08-29 17:05:23,083 - INFO - Iteration 11/20...
+2026-08-29 17:05:23,083 - INFO - Current hyperparameters: {'hidden_dim': 128, 'lr': 0.005647508010956017, 'weight_decay': 0.005250003181960044, 'dropout': 0.38717780112889044, 'num_layers': 2, 'batch_size': 128, 'seq_len': 40, 'max_epochs': 30}
+2026-08-29 17:05:23,086 - INFO - Processing fold 0
+2026-08-29 17:05:30,548 - INFO - Processing fold 1
+2026-08-29 17:05:45,115 - INFO - Processing fold 2
+2026-08-29 17:06:05,475 - INFO - Processing fold 3
+2026-08-29 17:06:34,314 - INFO - Processing fold 4
+2026-08-29 17:07:10,199 - INFO - Current MSE: 10.99238473427589
+2026-08-29 17:07:10,199 - INFO - Iteration 12/20...
+2026-08-29 17:07:10,199 - INFO - Current hyperparameters: {'hidden_dim': 128, 'lr': 0.004171145825040236, 'weight_decay': 0.007328852839245217, 'dropout': 0.3429927746218736, 'num_layers': 1, 'batch_size': 32, 'seq_len': 50, 'max_epochs': 40}
+2026-08-29 17:07:10,200 - INFO - Processing fold 0
+2026-08-29 17:07:18,675 - INFO - Processing fold 1
+2026-08-29 17:07:35,900 - INFO - Processing fold 2
+2026-08-29 17:08:01,591 - INFO - Processing fold 3
+2026-08-29 17:08:35,814 - INFO - Processing fold 4
+2026-08-29 17:09:19,155 - INFO - Current MSE: 16.25729300582178
+2026-08-29 17:09:19,155 - INFO - Iteration 13/20...
+2026-08-29 17:09:19,156 - INFO - Current hyperparameters: {'hidden_dim': 32, 'lr': 6.34648318012888e-05, 'weight_decay': 0.005313047633809808, 'dropout': 0.46429999946713146, 'num_layers': 2, 'batch_size': 32, 'seq_len': 30, 'max_epochs': 10}
+2026-08-29 17:09:19,156 - INFO - Processing fold 0
+2026-08-29 17:09:21,054 - INFO - Processing fold 1
+2026-08-29 17:09:24,257 - INFO - Processing fold 2
+2026-08-29 17:09:28,817 - INFO - Processing fold 3
+2026-08-29 17:09:34,672 - INFO - Processing fold 4
+2026-08-29 17:09:42,017 - INFO - Current MSE: 18.394698640756566
+2026-08-29 17:09:42,017 - INFO - Iteration 14/20...
+2026-08-29 17:09:42,017 - INFO - Current hyperparameters: {'hidden_dim': 256, 'lr': 0.009209775599943957, 'weight_decay': 0.0036078893510898555, 'dropout': 0.32830552127622237, 'num_layers': 1, 'batch_size': 16, 'seq_len': 20, 'max_epochs': 20}
+2026-08-29 17:09:42,019 - INFO - Processing fold 0
+2026-08-29 17:09:48,347 - INFO - Processing fold 1
+2026-08-29 17:10:00,256 - INFO - Processing fold 2
+2026-08-29 17:10:18,409 - INFO - Processing fold 3
+2026-08-29 17:10:41,241 - INFO - Processing fold 4
+2026-08-29 17:11:10,270 - INFO - Current MSE: 14.832772400009674
+2026-08-29 17:11:10,270 - INFO - Iteration 15/20...
+2026-08-29 17:11:10,270 - INFO - Current hyperparameters: {'hidden_dim': 16, 'lr': 0.0059098369731483, 'weight_decay': 0.004272963361358372, 'dropout': 0.4020648569176222, 'num_layers': 1, 'batch_size': 256, 'seq_len': 50, 'max_epochs': 10}
+2026-08-29 17:11:10,271 - INFO - Processing fold 0
+2026-08-29 17:11:10,915 - INFO - Processing fold 1
+2026-08-29 17:11:11,779 - INFO - Processing fold 2
+2026-08-29 17:11:12,842 - INFO - Processing fold 3
+2026-08-29 17:11:14,203 - INFO - Processing fold 4
+2026-08-29 17:11:15,777 - INFO - Current MSE: 10.970451238866504
+2026-08-29 17:11:15,777 - INFO - Iteration 16/20...
+2026-08-29 17:11:15,777 - INFO - Current hyperparameters: {'hidden_dim': 32, 'lr': 0.004885918472316862, 'weight_decay': 0.0023547495754143075, 'dropout': 0.41092063199255047, 'num_layers': 2, 'batch_size': 16, 'seq_len': 40, 'max_epochs': 50}
+2026-08-29 17:11:15,778 - INFO - Processing fold 0
+2026-08-29 17:11:27,086 - INFO - Processing fold 1
+2026-08-29 17:11:49,559 - INFO - Processing fold 2
+2026-08-29 17:12:23,887 - INFO - Processing fold 3
+2026-08-29 17:13:10,159 - INFO - Processing fold 4
+2026-08-29 17:14:07,408 - INFO - Current MSE: 24.341088293724287
+2026-08-29 17:14:07,408 - INFO - Iteration 17/20...
+2026-08-29 17:14:07,408 - INFO - Current hyperparameters: {'hidden_dim': 64, 'lr': 0.007771195419611761, 'weight_decay': 0.0007801502917189791, 'dropout': 0.3036273047285084, 'num_layers': 2, 'batch_size': 128, 'seq_len': 40, 'max_epochs': 10}
+2026-08-29 17:14:07,408 - INFO - Processing fold 0
+2026-08-29 17:14:08,865 - INFO - Processing fold 1
+2026-08-29 17:14:11,410 - INFO - Processing fold 2
+2026-08-29 17:14:14,897 - INFO - Processing fold 3
+2026-08-29 17:14:19,428 - INFO - Processing fold 4
+2026-08-29 17:14:25,094 - INFO - Current MSE: 10.381370844109789
+2026-08-29 17:14:25,094 - INFO - Iteration 18/20...
+2026-08-29 17:14:25,094 - INFO - Current hyperparameters: {'hidden_dim': 256, 'lr': 0.0006424543203554056, 'weight_decay': 0.004326106273806441, 'dropout': 0.44171596280928177, 'num_layers': 1, 'batch_size': 16, 'seq_len': 50, 'max_epochs': 30}
+2026-08-29 17:14:25,095 - INFO - Processing fold 0
+2026-08-29 17:14:40,988 - INFO - Processing fold 1
+2026-08-29 17:15:13,004 - INFO - Processing fold 2
+2026-08-29 17:16:01,124 - INFO - Processing fold 3
+2026-08-29 17:17:06,055 - INFO - Processing fold 4
+2026-08-29 17:18:28,336 - INFO - Current MSE: 7.662819065346071
+2026-08-29 17:18:28,336 - INFO - Iteration 19/20...
+2026-08-29 17:18:28,336 - INFO - Current hyperparameters: {'hidden_dim': 32, 'lr': 0.0016010187711365301, 'weight_decay': 0.004344074575061885, 'dropout': 0.2857666064775432, 'num_layers': 1, 'batch_size': 32, 'seq_len': 20, 'max_epochs': 50}
+2026-08-29 17:18:28,337 - INFO - Processing fold 0
+2026-08-29 17:18:32,170 - INFO - Processing fold 1
+2026-08-29 17:18:39,238 - INFO - Processing fold 2
+2026-08-29 17:18:49,422 - INFO - Processing fold 3
+2026-08-29 17:19:02,827 - INFO - Processing fold 4
+2026-08-29 17:19:19,546 - INFO - Current MSE: 10.354688457000469
+2026-08-29 17:19:19,546 - INFO - Iteration 20/20...
+2026-08-29 17:19:19,546 - INFO - Current hyperparameters: {'hidden_dim': 64, 'lr': 0.0037299328160474185, 'weight_decay': 0.007851580127841602, 'dropout': 0.3806072788280657, 'num_layers': 1, 'batch_size': 32, 'seq_len': 20, 'max_epochs': 10}
+2026-08-29 17:19:19,547 - INFO - Processing fold 0
+2026-08-29 17:19:20,629 - INFO - Processing fold 1
+2026-08-29 17:19:22,599 - INFO - Processing fold 2
+2026-08-29 17:19:25,315 - INFO - Processing fold 3
+2026-08-29 17:19:28,877 - INFO - Processing fold 4
+2026-08-29 17:19:33,244 - INFO - Current MSE: 9.87520528980243
+2026-08-29 17:19:33,244 - INFO - Best parameters for VanillaLSTM: {'hidden_dim': 256, 'lr': 0.0006424543203554056, 'weight_decay': 0.004326106273806441, 'dropout': 0.44171596280928177, 'num_layers': 1, 'batch_size': 16, 'seq_len': 50, 'max_epochs': 30}
+2026-08-29 17:19:33,244 - INFO - Best MSE for VanillaLSTM: 7.662819065346071
+2026-08-29 17:19:33,251 - INFO - Successfully saved to /home/victor/Projects/regularized-MAR-vs-residual-LSTM-in-forcasting-IVS/data/result/LSTM/best_hyperparameters_VanillaLSTM.json
+2026-08-29 17:19:33,251 - INFO - Starting finetuning ResidualLSTM...
+2026-08-29 17:19:33,251 - INFO - Iteration 1/20...
+2026-08-29 17:19:33,251 - INFO - Current hyperparameters: {'hidden_dim': 128, 'lr': 0.00029204118238476754, 'weight_decay': 0.00879243243900248, 'dropout': 0.25590611460706436, 'num_layers': 1, 'batch_size': 64, 'seq_len': 30, 'max_epochs': 20}
+2026-08-29 17:19:33,252 - INFO - Processing fold 0
+2026-08-29 17:19:35,954 - INFO - Processing fold 1
+2026-08-29 17:19:40,653 - INFO - Processing fold 2
+2026-08-29 17:19:47,491 - INFO - Processing fold 3
+2026-08-29 17:19:56,484 - INFO - Processing fold 4
+2026-08-29 17:20:07,433 - INFO - Current MSE: 1.3698434810958684
+2026-08-29 17:20:07,433 - INFO - Iteration 2/20...
+2026-08-29 17:20:07,433 - INFO - Current hyperparameters: {'hidden_dim': 128, 'lr': 0.004210601717569591, 'weight_decay': 0.0058503596464601635, 'dropout': 0.31100606918934365, 'num_layers': 1, 'batch_size': 256, 'seq_len': 40, 'max_epochs': 50}
+2026-08-29 17:20:07,434 - INFO - Processing fold 0
+2026-08-29 17:20:14,982 - INFO - Processing fold 1
+2026-08-29 17:20:28,966 - INFO - Processing fold 2
+2026-08-29 17:20:51,143 - INFO - Processing fold 3
+2026-08-29 17:21:20,152 - INFO - Processing fold 4
+2026-08-29 17:21:56,805 - INFO - Current MSE: 1.378864282433371
+2026-08-29 17:21:56,805 - INFO - Iteration 3/20...
+2026-08-29 17:21:56,805 - INFO - Current hyperparameters: {'hidden_dim': 64, 'lr': 0.007557361500584794, 'weight_decay': 0.008702024568940791, 'dropout': 0.3531819201593954, 'num_layers': 1, 'batch_size': 256, 'seq_len': 10, 'max_epochs': 20}
+2026-08-29 17:21:56,806 - INFO - Processing fold 0
+2026-08-29 17:21:57,700 - INFO - Processing fold 1
+2026-08-29 17:21:58,825 - INFO - Processing fold 2
+2026-08-29 17:22:00,363 - INFO - Processing fold 3
+2026-08-29 17:22:02,228 - INFO - Processing fold 4
+2026-08-29 17:22:04,409 - INFO - Current MSE: 1.3703425209425077
+2026-08-29 17:22:04,409 - INFO - Iteration 4/20...
+2026-08-29 17:22:04,409 - INFO - Current hyperparameters: {'hidden_dim': 256, 'lr': 0.009022971788988345, 'weight_decay': 0.0021317897160859425, 'dropout': 0.4601150206825821, 'num_layers': 2, 'batch_size': 256, 'seq_len': 30, 'max_epochs': 50}
+2026-08-29 17:22:04,413 - INFO - Processing fold 0
+2026-08-29 17:22:31,795 - INFO - Processing fold 1
+2026-08-29 17:23:25,632 - INFO - Processing fold 2
+2026-08-29 17:24:46,560 - INFO - Processing fold 3
+2026-08-29 17:26:33,711 - INFO - Processing fold 4
+2026-08-29 17:29:47,979 - INFO - Current MSE: 1.376993843654529
+2026-08-29 17:29:47,979 - INFO - Iteration 5/20...
+2026-08-29 17:29:47,980 - INFO - Current hyperparameters: {'hidden_dim': 128, 'lr': 0.006006262299931676, 'weight_decay': 0.005111401688345193, 'dropout': 0.35591693622030485, 'num_layers': 1, 'batch_size': 32, 'seq_len': 10, 'max_epochs': 30}
+2026-08-29 17:29:47,981 - INFO - Processing fold 0
+2026-08-29 17:29:50,726 - INFO - Processing fold 1
+2026-08-29 17:29:55,517 - INFO - Processing fold 2
+2026-08-29 17:30:02,338 - INFO - Processing fold 3
+2026-08-29 17:30:11,553 - INFO - Processing fold 4
+2026-08-29 17:30:22,980 - INFO - Current MSE: 1.4327884441934815
+2026-08-29 17:30:22,980 - INFO - Iteration 6/20...
+2026-08-29 17:30:22,980 - INFO - Current hyperparameters: {'hidden_dim': 256, 'lr': 0.008658806504645802, 'weight_decay': 0.008713408202803818, 'dropout': 0.28393956745717974, 'num_layers': 2, 'batch_size': 32, 'seq_len': 40, 'max_epochs': 40}
+2026-08-29 17:30:22,984 - INFO - Processing fold 0
+2026-08-29 17:33:12,601 - INFO - Processing fold 1
+2026-08-29 17:39:35,986 - INFO - Processing fold 2
+2026-08-29 18:13:19,220 - INFO - Processing fold 3
+2026-08-29 18:34:55,140 - INFO - Processing fold 4
+2026-08-29 18:55:52,342 - INFO - Current MSE: 1.3693345851814367
+2026-08-29 18:55:52,342 - INFO - Iteration 7/20...
+2026-08-29 18:55:52,382 - INFO - Current hyperparameters: {'hidden_dim': 16, 'lr': 0.009072403523337175, 'weight_decay': 0.0008223687569203962, 'dropout': 0.3691547883356504, 'num_layers': 2, 'batch_size': 256, 'seq_len': 50, 'max_epochs': 10}
+2026-08-29 18:55:52,391 - INFO - Processing fold 0
+2026-08-29 18:55:53,239 - INFO - Processing fold 1
+2026-08-29 18:55:54,442 - INFO - Processing fold 2
+2026-08-29 18:55:55,979 - INFO - Processing fold 3
+2026-08-29 18:55:57,975 - INFO - Processing fold 4
+2026-08-29 18:56:00,427 - INFO - Current MSE: 1.3693144377470323
+2026-08-29 18:56:00,428 - INFO - Iteration 8/20...
+2026-08-29 18:56:00,428 - INFO - Current hyperparameters: {'hidden_dim': 32, 'lr': 0.0031976777616309466, 'weight_decay': 0.0031540008036514073, 'dropout': 0.4107175054605463, 'num_layers': 2, 'batch_size': 64, 'seq_len': 10, 'max_epochs': 50}
+2026-08-29 18:56:00,428 - INFO - Processing fold 0
+2026-08-29 18:56:03,067 - INFO - Processing fold 1
+2026-08-29 18:56:12,964 - INFO - Processing fold 2
+2026-08-29 18:56:20,305 - INFO - Processing fold 3
+2026-08-29 18:56:42,344 - INFO - Processing fold 4
+2026-08-29 18:57:01,580 - INFO - Current MSE: 1.368342977614144
+2026-08-29 18:57:01,580 - INFO - Iteration 9/20...
+2026-08-29 18:57:01,580 - INFO - Current hyperparameters: {'hidden_dim': 64, 'lr': 0.008192594163752011, 'weight_decay': 0.006249540117279431, 'dropout': 0.2859684873306489, 'num_layers': 1, 'batch_size': 16, 'seq_len': 10, 'max_epochs': 10}
+2026-08-29 18:57:01,581 - INFO - Processing fold 0
+2026-08-29 18:57:03,019 - INFO - Processing fold 1
+2026-08-29 18:57:05,561 - INFO - Processing fold 2
+2026-08-29 18:57:09,178 - INFO - Processing fold 3
+2026-08-29 18:57:13,882 - INFO - Processing fold 4
+2026-08-29 18:57:19,742 - INFO - Current MSE: 1.3800919544836603
+2026-08-29 18:57:19,742 - INFO - Iteration 10/20...
+2026-08-29 18:57:19,742 - INFO - Current hyperparameters: {'hidden_dim': 128, 'lr': 0.00838474248313606, 'weight_decay': 0.009925027130981794, 'dropout': 0.24859265747078263, 'num_layers': 2, 'batch_size': 16, 'seq_len': 50, 'max_epochs': 20}
+2026-08-29 18:57:19,744 - INFO - Processing fold 0
+2026-08-29 18:57:59,669 - INFO - Processing fold 1
+2026-08-29 19:01:38,316 - INFO - Processing fold 2
+2026-08-29 19:04:00,909 - INFO - Processing fold 3
+2026-08-29 19:06:31,411 - INFO - Processing fold 4
+2026-08-29 19:10:30,877 - INFO - Current MSE: 1.3706234707435965
+2026-08-29 19:10:30,877 - INFO - Iteration 11/20...
+2026-08-29 19:10:30,877 - INFO - Current hyperparameters: {'hidden_dim': 128, 'lr': 0.005498689189187613, 'weight_decay': 0.007668935936813342, 'dropout': 0.20202597884475693, 'num_layers': 1, 'batch_size': 128, 'seq_len': 50, 'max_epochs': 50}
+2026-08-29 19:10:30,878 - INFO - Processing fold 0
+2026-08-29 19:10:38,459 - INFO - Processing fold 1
+2026-08-29 19:10:53,210 - INFO - Processing fold 2
+2026-08-29 19:11:14,731 - INFO - Processing fold 3
+2026-08-29 19:11:43,139 - INFO - Processing fold 4
+2026-08-29 19:12:19,075 - INFO - Current MSE: 1.4160252001120208
+2026-08-29 19:12:19,075 - INFO - Iteration 12/20...
+2026-08-29 19:12:19,075 - INFO - Current hyperparameters: {'hidden_dim': 128, 'lr': 0.00047838748513644223, 'weight_decay': 0.00860667965914179, 'dropout': 0.40603472344628866, 'num_layers': 1, 'batch_size': 256, 'seq_len': 10, 'max_epochs': 10}
+2026-08-29 19:12:19,076 - INFO - Processing fold 0
+2026-08-29 19:12:20,073 - INFO - Processing fold 1
+2026-08-29 19:12:21,566 - INFO - Processing fold 2
+2026-08-29 19:12:23,563 - INFO - Processing fold 3
+2026-08-29 19:12:26,047 - INFO - Processing fold 4
+2026-08-29 19:12:29,075 - INFO - Current MSE: 1.3738174061385457
+2026-08-29 19:12:29,076 - INFO - Iteration 13/20...
+2026-08-29 19:12:29,076 - INFO - Current hyperparameters: {'hidden_dim': 32, 'lr': 0.004137403455192328, 'weight_decay': 0.0008502869101739235, 'dropout': 0.3507163255843081, 'num_layers': 1, 'batch_size': 16, 'seq_len': 40, 'max_epochs': 30}
+2026-08-29 19:12:29,076 - INFO - Processing fold 0
+2026-08-29 19:12:33,285 - INFO - Processing fold 1
+2026-08-29 19:12:41,746 - INFO - Processing fold 2
+2026-08-29 19:12:54,287 - INFO - Processing fold 3
+2026-08-29 19:13:11,726 - INFO - Processing fold 4
+2026-08-29 19:13:32,663 - INFO - Current MSE: 1.3968460589907026
+2026-08-29 19:13:32,663 - INFO - Iteration 14/20...
+2026-08-29 19:13:32,663 - INFO - Current hyperparameters: {'hidden_dim': 32, 'lr': 0.002428545601864163, 'weight_decay': 0.006393707738188758, 'dropout': 0.20037576337062735, 'num_layers': 2, 'batch_size': 32, 'seq_len': 20, 'max_epochs': 10}
+2026-08-29 19:13:32,664 - INFO - Processing fold 0
+2026-08-29 19:13:34,068 - INFO - Processing fold 1
+2026-08-29 19:13:36,527 - INFO - Processing fold 2
+2026-08-29 19:13:41,241 - INFO - Processing fold 3
+2026-08-29 19:13:50,831 - INFO - Processing fold 4
+2026-08-29 19:14:08,598 - INFO - Current MSE: 1.3692836093367808
+2026-08-29 19:14:08,598 - INFO - Iteration 15/20...
+2026-08-29 19:14:08,598 - INFO - Current hyperparameters: {'hidden_dim': 16, 'lr': 0.0024500704597852562, 'weight_decay': 0.009043154141530022, 'dropout': 0.43546157351549464, 'num_layers': 2, 'batch_size': 128, 'seq_len': 10, 'max_epochs': 20}
+2026-08-29 19:14:08,599 - INFO - Processing fold 0
+2026-08-29 19:14:09,337 - INFO - Processing fold 1
+2026-08-29 19:14:10,584 - INFO - Processing fold 2
+2026-08-29 19:14:12,231 - INFO - Processing fold 3
+2026-08-29 19:14:14,285 - INFO - Processing fold 4
+2026-08-29 19:14:17,408 - INFO - Current MSE: 1.3697680221845943
+2026-08-29 19:14:17,408 - INFO - Iteration 16/20...
+2026-08-29 19:14:17,408 - INFO - Current hyperparameters: {'hidden_dim': 32, 'lr': 0.007292050441313507, 'weight_decay': 0.005508542934109318, 'dropout': 0.32597057801114426, 'num_layers': 2, 'batch_size': 32, 'seq_len': 10, 'max_epochs': 10}
+2026-08-29 19:14:17,409 - INFO - Processing fold 0
+2026-08-29 19:14:18,455 - INFO - Processing fold 1
+2026-08-29 19:14:20,351 - INFO - Processing fold 2
+2026-08-29 19:14:22,875 - INFO - Processing fold 3
+2026-08-29 19:14:26,711 - INFO - Processing fold 4
+2026-08-29 19:14:32,860 - INFO - Current MSE: 1.3687620345681117
+2026-08-29 19:14:32,861 - INFO - Iteration 17/20...
+2026-08-29 19:14:32,861 - INFO - Current hyperparameters: {'hidden_dim': 32, 'lr': 0.0036345824070332937, 'weight_decay': 0.005751316767521506, 'dropout': 0.4403169948357236, 'num_layers': 2, 'batch_size': 128, 'seq_len': 50, 'max_epochs': 50}
+2026-08-29 19:14:32,861 - INFO - Processing fold 0
+2026-08-29 19:14:37,337 - INFO - Processing fold 1
+2026-08-29 19:15:00,614 - INFO - Processing fold 2
+2026-08-29 19:16:41,955 - INFO - Processing fold 3
+2026-08-29 19:20:04,886 - INFO - Processing fold 4
+2026-08-29 19:23:53,032 - INFO - Current MSE: 1.3687502061908456
+2026-08-29 19:23:53,032 - INFO - Iteration 18/20...
+2026-08-29 19:23:53,032 - INFO - Current hyperparameters: {'hidden_dim': 32, 'lr': 0.0018995385540700675, 'weight_decay': 0.00942693290871787, 'dropout': 0.3423277949564476, 'num_layers': 1, 'batch_size': 128, 'seq_len': 50, 'max_epochs': 30}
+2026-08-29 19:23:53,032 - INFO - Processing fold 0
+2026-08-29 19:23:54,818 - INFO - Processing fold 1
+2026-08-29 19:23:58,207 - INFO - Processing fold 2
+2026-08-29 19:24:02,824 - INFO - Processing fold 3
+2026-08-29 19:24:08,892 - INFO - Processing fold 4
+2026-08-29 19:24:16,524 - INFO - Current MSE: 1.369118608404793
+2026-08-29 19:24:16,524 - INFO - Iteration 19/20...
+2026-08-29 19:24:16,524 - INFO - Current hyperparameters: {'hidden_dim': 16, 'lr': 0.009520087730203972, 'weight_decay': 0.007343906160829681, 'dropout': 0.24844906006467016, 'num_layers': 1, 'batch_size': 256, 'seq_len': 30, 'max_epochs': 40}
+2026-08-29 19:24:16,525 - INFO - Processing fold 0
+2026-08-29 19:24:17,719 - INFO - Processing fold 1
+2026-08-29 19:24:19,603 - INFO - Processing fold 2
+2026-08-29 19:24:22,260 - INFO - Processing fold 3
+2026-08-29 19:24:25,442 - INFO - Processing fold 4
+2026-08-29 19:24:29,421 - INFO - Current MSE: 1.3700599166671261
+2026-08-29 19:24:29,421 - INFO - Iteration 20/20...
+2026-08-29 19:24:29,421 - INFO - Current hyperparameters: {'hidden_dim': 32, 'lr': 0.0028526751863226225, 'weight_decay': 0.008770021295191631, 'dropout': 0.43630068746863515, 'num_layers': 2, 'batch_size': 64, 'seq_len': 50, 'max_epochs': 50}
+2026-08-29 19:24:29,422 - INFO - Processing fold 0
+2026-08-29 19:24:37,086 - INFO - Processing fold 1
+2026-08-29 19:25:52,923 - INFO - Processing fold 2
+2026-08-29 19:27:58,942 - INFO - Processing fold 3
+2026-08-29 19:31:21,419 - INFO - Processing fold 4
+2026-08-29 19:35:08,106 - INFO - Current MSE: 1.3688559426850821
+2026-08-29 19:35:08,106 - INFO - Best parameters for ResidualLSTM: {'hidden_dim': 32, 'lr': 0.0031976777616309466, 'weight_decay': 0.0031540008036514073, 'dropout': 0.4107175054605463, 'num_layers': 2, 'batch_size': 64, 'seq_len': 10, 'max_epochs': 50}
+2026-08-29 19:35:08,106 - INFO - Best MSE for ResidualLSTM: 1.368342977614144
+2026-08-29 19:35:08,118 - INFO - Successfully saved to /home/victor/Projects/regularized-MAR-vs-residual-LSTM-in-forcasting-IVS/data/result/LSTM/best_hyperparameters_ResidualLSTM.json
