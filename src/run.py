@@ -7,6 +7,7 @@ from run_regularized_mar import main as run_regularized_mar
 from examine_mar import main as examine_mar
 from finetune_lstm import main as finetune_lstm
 from run_lstm import main as run_lstm
+from visualize_res import main as visualize_res
 
 
 def main():
@@ -19,6 +20,7 @@ def main():
     examine_mar()
     finetune_lstm()
     run_lstm()
+    visualize_res()
 
 
 

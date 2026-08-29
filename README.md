@@ -1,3 +1,38 @@
-# Regularized MAR and Residual LSTM in Forecasting Implied Volatility Surface
+# Regularized MAR and Residual LSTM in Forecasting Implied Volatility Surfaces
 
-This ongoing project compares the performance of deep learning architectures Long Short-Term Memory (LSTM) and Residual LSTM against econometric baselines Vector Autoregressive (VAR), Matrix Autoregressive (MAR), and MAR with regularization ElasticNet in forecasting Implied Volatility (IV) surfaces.
+This project compares the predictive performance of deep-learning architectures LSTM and LSTM with residual connections against econometric baselines Vetor Autoregressive (VAR), Matrix Autoregressive (MAR), and MAR with ElasticNet regularization in forecasting Implied Volatility (IV) Surfaces.
+
+## Repository Structure
+
+```text
+.
+├── README.md
+├── config/
+│   └── environment.yml
+├── data/
+│   ├── raw/
+│   ├── processed/
+│   └── result/
+├── asset/
+│   ├── figure/
+│   ├── reference/
+│   └── report.typ
+├── notebook/
+└── src/
+```
+
+
+## How to Run the Project
+
+### 1) Set up a Conda environment
+
+```bash
+conda env create -f config/environment.yml -l ./.env
+conda activate ./.env
+```
+
+### 2) Run the full pipeline
+
+```bash
+python src/run.py
+```
