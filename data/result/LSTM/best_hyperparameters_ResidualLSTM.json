@@ -1,0 +1,1 @@
+{"hidden_dim": 32, "lr": 0.0031976777616309466, "weight_decay": 0.0031540008036514073, "dropout": 0.4107175054605463, "num_layers": 2, "batch_size": 64, "seq_len": 10, "max_epochs": 50}

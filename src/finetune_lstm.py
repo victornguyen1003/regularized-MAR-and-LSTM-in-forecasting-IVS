@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    rng = np.random_default_rng()
+    rng = np.random.default_rng()
 
     logger.info(f"Loading training data...")
     train_data = load_transformed_data(PROCESSED_DATA_DIR / "uncentered_train_data.csv")
@@ -33,20 +33,39 @@ def main():
 
         best_params = {}
         best_mse = np.inf
-        for iter in range(100):
+        for iter in range(20):
+            logger.info(f"Iteration {iter+1}/20...")
+
             params = {
-                'hidden_dim': rng.choice([20, 50, 100, 200, 500]),
-                'lr': rng.uniform(1e-5, 1e-2, size=5),
-                'weight_decay': rng.uniform(1e-5, 1e-2, size=5),
-                'dropout': rng.uniform(0.2, 0.5, size=5),
-                'num_layers': rng.choice([1, 2, 3, 4, 5]),
-                "batch_size": rng.choice([16, 32, 64, 128, 256]),
-                "seq_len": rng.choice([10, 20, 50, 100, 200]),
-                "max_epochs": rng.choice([10, 20, 50, 100, 200]),
+                'hidden_dim': int(rng.choice([16, 32, 64, 128, 256])),
+                'lr': float(rng.uniform(1e-5, 1e-2)),
+                'weight_decay': float(rng.uniform(1e-5, 1e-2)),
+                'dropout': float(rng.uniform(0.2, 0.5)),
+                'num_layers': int(rng.choice([1, 2])),
+                "batch_size": int(rng.choice([16, 32, 64, 128, 256])),
+                "seq_len": int(rng.choice([10, 20, 30, 40, 50])),
+                "max_epochs": int(rng.choice([10, 20, 30, 40, 50])),
             }
+            logger.info(f"Current hyperparameters: {params}")
 
-            res = LSTM_Results(model=model_class(), name=model_name, input_dim=k_vars, output_dim=k_vars, **params)
+            model = model_class(
+                input_dim=k_vars, 
+                hidden_dim=params['hidden_dim'], 
+                output_dim=k_vars, 
+                lr=params['lr'], 
+                weight_decay=params['weight_decay'], 
+                dropout=params['dropout'], 
+                num_layers=params['num_layers']
+            )
 
+            res = LSTM_Results(
+                model=model, 
+                name=model_name, 
+                input_dim=k_vars, 
+                output_dim=k_vars, 
+                **params
+            )
+            
             tscv = TimeSeriesSplit(n_splits=5)
             mse_all_fold = []
             for fold_index, (train_index, val_index) in enumerate(tscv.split(train_data)):
@@ -56,18 +75,25 @@ def main():
                 val_fold = train_data.iloc[val_index]
 
                 res.train(train_fold)
-                train_fold_scaled = res.scaler.transform(train_fold)
+                train_fold_scaled = res.scaler.transform(train_fold.values)
+                val_fold_scaled = res.scaler.transform(val_fold.values)
+                combined_scaled = np.concatenate([train_fold_scaled, val_fold_scaled], axis=0)
+                
+                val_start_idx = len(train_fold_scaled)
 
                 mse_one_fold = []
                 for i in range(len(val_fold)):
-                    actual = val_fold[i];
-                    input = train_fold_scaled[-res.seq_len:]
-                    pred = res.forecast(input, step=i+1)
+                    actual = val_fold.iloc[i].values
+                    
+                    input_seq = combined_scaled[val_start_idx + i - res.seq_len : val_start_idx + i]
+                    
+                    pred = res.forecast(input_seq, steps=1)
                     mse_one_fold.append(np.mean((pred - actual)**2))
 
                 mse_all_fold.append(np.mean(mse_one_fold))
 
             current_mse = np.mean(mse_all_fold)
+            logger.info(f"Current MSE: {current_mse}")
             if current_mse < best_mse:
                 best_mse = current_mse
                 best_params = params

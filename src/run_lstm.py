@@ -9,6 +9,7 @@ from sklearn.preprocessing import StandardScaler
 
 from datetime import datetime
 from pathlib import Path
+import json
 
 from util import load_transformed_data, save_csv
 from config import PROCESSED_DATA_DIR, RES_DIR, FORECAST_HORIZONS
@@ -120,6 +121,10 @@ class LSTM_Results:
         return self.scaler.inverse_transform(pred).flatten()
     
     def test(self, dates_to_test: pd.DatetimeIndex, X: pd.DataFrame, training_set: bool = False):
+        self.forecasts = {h: [] for h in FORECAST_HORIZONS}
+        self.squared_errors = {h: [] for h in FORECAST_HORIZONS}
+        self.mse = {}
+
         X_scaled = self.scaler.transform(X.values)
 
         for horizon in FORECAST_HORIZONS:
@@ -154,3 +159,66 @@ class LSTM_Results:
         save_csv(df_mse, res_dir / out_name)
 
         return df_mse
+
+
+def main():
+    print(f"Starting training and testing LSTM models at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
+    logger.info(f"Loading data...")
+    train_data = load_transformed_data(PROCESSED_DATA_DIR / "uncentered_train_data.csv")
+    test_data = load_transformed_data(PROCESSED_DATA_DIR / "uncentered_test_data.csv")
+    full_data = load_transformed_data(PROCESSED_DATA_DIR / "uncentered_full_data.csv")
+    k_vars = train_data.shape[1]
+    model_names = ["VanillaLSTM", "ResidualLSTM"]
+
+    for model_name in model_names:
+        logger.info(f"Model: {model_name}")
+
+        logger.info(f"Loading hyperparameters...")
+        with open(res_dir / f"best_hyperparameters_{model_name}.json") as f:
+            params = json.load(f)
+            logger.info(f"Hyperparameters: {params}")
+
+        if model_name == "VanillaLSTM":
+            model_class = VanillaLSTM
+        elif model_name == "ResidualLSTM":
+            model_class = ResidualLSTM
+
+        model = model_class(
+            input_dim=k_vars, 
+            hidden_dim=params['hidden_dim'], 
+            output_dim=k_vars, 
+            lr=params['lr'], 
+            weight_decay=params['weight_decay'], 
+            dropout=params['dropout'], 
+            num_layers=params['num_layers']
+        )
+
+        res = LSTM_Results(
+            model=model, 
+            name=model_name, 
+            input_dim=k_vars, 
+            output_dim=k_vars, 
+            **params
+        )
+
+        logger.info(f"Starting training {model_name}...")
+        res.train(train_data)
+
+        logger.info(f"Computing training MSE for {model_name}...")
+        dates_to_train = train_data.index
+        res.test(dates_to_train, train_data,training_set=True)
+
+        logger.info(f"Starting testing {model_name}...")
+        dates_to_test = test_data.index
+        res.test(dates_to_test, full_data)
+
+    print(f"Finished training and testing LSTM models at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
+
+if __name__ == "__main__":
+    logging.basicConfig(level = logging.INFO,
+                        format ='%(asctime)s - %(levelname)s - %(message)s',
+                        filename = res_dir / "modeling_lstm.log",
+                        filemode = 'w')
+    main()
