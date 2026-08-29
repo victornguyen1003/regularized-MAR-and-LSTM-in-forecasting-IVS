@@ -2,7 +2,7 @@
 
 This project compares the predictive performance of deep-learning architectures LSTM and LSTM with residual connections against econometric baselines Vetor Autoregressive (VAR), Matrix Autoregressive (MAR), and MAR with ElasticNet regularization in forecasting Implied Volatility (IV) Surfaces.
 
-## Repository Structure
+## Project structure
 
 ```text
 .
@@ -22,7 +22,7 @@ This project compares the predictive performance of deep-learning architectures 
 ```
 
 
-## How to Run the Project
+## How to run locally
 
 ### 1) Set up a Conda environment
 
