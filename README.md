@@ -21,13 +21,12 @@ This project compares the predictive performance of deep-learning architectures 
 └── src/
 ```
 
-
 ## How to run locally
 
 ### 1) Set up a Conda environment
 
 ```bash
-conda env create -f config/environment.yml -l ./.env
+conda env create -f config/environment.yml -p ./.env
 conda activate ./.env
 ```
 
