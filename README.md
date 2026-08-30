@@ -177,7 +177,7 @@ Residual LSTM and regularized MAR achieved the best, almost equal test MSE for 1
 
 ### MAR
 
-The off-diagonal entries of MAR's matrix coefficients are close to 0, turning them to scaled identity matrices. 
+The off-diagonal entries of MAR's matrix coefficients are close to 0, turning them to scaled identity matrices. The scales of A and B multiply to 1, suggesting IV follows a random walk.
 
 ![A lse](./asset/figure/MAR_A_lse.png)
 ![B lse](./asset/figure/MAR_B_lse.png)
