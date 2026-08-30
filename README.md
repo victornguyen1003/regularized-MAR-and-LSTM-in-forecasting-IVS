@@ -20,15 +20,13 @@ While these time-series econometric models assumes linearity, sequential deep le
 
 ### Vector autoregressive model (VAR)
 
-Let $X_t \in \mathbb{R}^{m \times n}$ represent the IV matrix at time $t$
+Let $X_t \in \mathbb{R}^{m \times n}$ represent the IV matrix at time $t$.
 
 VAR(1):
 
-$$
-\text{vec}(X_t) = \Phi\text{vec}(X_{t-1}) + e_t
-$$
+$$\text{vec}(X_t) = \Phi\text{vec}(X_{t-1}) + e_t$$
 
-*where $vec(.)$ is the vectorization of a matrix by stacking its columns*
+where $\text{vec}(.)$ is the vectorization of a matrix by stacking its columns.
 
 - Fail to capture relationship between rows and columns
 - Number of parameters: $O(m^2n^2)$
@@ -36,9 +34,8 @@ $$
 ### Matrix autoregressive model (MAR)
 
 MAR(1):
-$$
-X_t = A X_{t-1} B^\top + E_t
-$$
+
+$$X_t = A X_{t-1} B^\top + E_t$$
 
 - Preserve the matrix structure
 - Number of parameters: $O(m^2+n^2)$
@@ -47,51 +44,40 @@ Vectorized representation of MAR(1):
 
 $$\text{vec}(X_t) = (B \otimes A)\text{vec}(X_{t-1}) + \text{vec}(E_t)$$
 
-*where $\otimes$ denotes the Kronecker product*
+where $\otimes$ denotes the Kronecker product.
 
 ### MAR estimation (1): projection
 
-Project an estimator of the VAR coefficient matrix, denoted as $\hat{\Phi}$, onto the space of Kronecker products under the Frobenius norm
+Project an estimator of the VAR coefficient matrix, denoted as $\hat{\Phi}$, onto the space of Kronecker products under the Frobenius norm:
 
-$$
-(\hat{A}_1, \hat{B}_1) = \arg\min_{A,B} \|\hat{\Phi} - B \otimes A\|_F^2
-$$
+$$(\hat{A}_1, \hat{B}_1) = \arg\min_{A,B} \|\hat{\Phi} - B \otimes A\|_F^2$$
 
-*An explicit solution exists, obtained through a singular value decomposition (SVD) of a re-arrangement version of ${\Phi}$ (Van Loan, 2000)*
+An explicit solution exists, obtained through a singular value decomposition (SVD) of a re-arrangement version of $\hat{\Phi}$ (Van Loan, 2000).
 
-*The set of entries of $B \otimes A$ is the same as the set of entries of $\text{vec}(A)\text{vec}(B)'$*
+The set of entries of $B \otimes A$ is the same as the set of entries of $\text{vec}(A)\text{vec}(B)'$.
 
-Define a re-arrangement operator $\mathcal{G} : \mathbb{R}^{mn \times mn} \rightarrow \mathbb{R}^{m^2 \times n^2}$
+Define a re-arrangement operator $\mathcal{G} : \mathbb{R}^{mn \times mn} \rightarrow \mathbb{R}^{m^2 \times n^2}$:
 
-$$
-\mathcal{G}(B \otimes A) = \text{vec}(A)\text{vec}(B)'
-$$
+$$\mathcal{G}(B \otimes A) = \text{vec}(A)\text{vec}(B)'$$
 
-Given $\|\mathcal{G}(\boldsymbol{C})\|_F = \|\boldsymbol{C}\|_F$ and $\mathcal{G}$ is linear
+Given $\|\mathcal{G}(\boldsymbol{C})\|_F = \|\boldsymbol{C}\|_F$ and $\mathcal{G}$ is linear:
 
-$$
-\begin{aligned}
+$$\begin{aligned}
 \min_{\boldsymbol{A},\boldsymbol{B}} \|\hat{\Phi} - \boldsymbol{B} \otimes \boldsymbol{A}\|_F^2
+&= \min_{\boldsymbol{A},\boldsymbol{B}} \|\mathcal{G}(\hat{\Phi}) - \mathcal{G}(\boldsymbol{B} \otimes \boldsymbol{A})\|_F^2 \\
+&= \min_{\boldsymbol{A},\boldsymbol{B}} \|\mathcal{G}(\hat{\Phi}) - \text{vec}(\boldsymbol{A})\text{vec}(\boldsymbol{B})'\|_F^2 \\
+&= \min_{\boldsymbol{A},\boldsymbol{B}} \|\tilde{\Phi} - \text{vec}(\boldsymbol{A})\text{vec}(\boldsymbol{B})'\|_F^2
+\end{aligned}$$
 
-&= \min_{\boldsymbol{A},\boldsymbol{B}} \|\mathcal{G}(\hat{\Phi}) - \mathcal{G}(\boldsymbol{B} \otimes \boldsymbol{A})\|_F^2
+where $\tilde{\Phi} = \mathcal{G}(\hat{\Phi})$ is the re-arranged $\hat{\Phi}$.
 
-\\ &= \min_{\boldsymbol{A},\boldsymbol{B}} \|\mathcal{G}(\hat{\Phi}) - \text{vec}(\boldsymbol{A})\text{vec}(\boldsymbol{B})'\|_F^2 \\
+Then:
 
-&= \min_{\boldsymbol{A},\boldsymbol{B}} \|\tilde{\Phi} - \text{vec}(\boldsymbol{A})\text{vec}(\boldsymbol{B})'\|_F^2,
-\end{aligned}
-$$
+$$\text{vec}(\hat{\boldsymbol{A}})\text{vec}(\hat{\boldsymbol{B}})' = d_1 \boldsymbol{u}_1 \boldsymbol{v}_1'$$
 
-*where $\tilde{\Phi} = \mathcal{G}(\hat{\Phi})$ is the re-arranged $\hat{\Phi}$*
+where $d_1$ is the largest singular value of $\tilde{\Phi}$, and $u_1$, $v_1$ are the corresponding first left and right singular vectors.
 
-Then,
-
-$$
-\text{vec}(\hat{\boldsymbol{A}})\text{vec}(\hat{\boldsymbol{B}})' = d_1 \boldsymbol{u}_1 \boldsymbol{v}_1',
-$$
-
-*where $d_1$ is the largest singular value of $\tilde{\Phi}$, and $u_1$, $v_1$ are the corresponding first left and right singular vectors*
-
-By converting the vectors into matrices, we obtain the *projection estimators (PROJ)* of $A$ and $B$, denoted by $\hat{A}_1$ and $\hat{B}_1$, with the normalization that $\|\hat{A}_1\|_F = 1$
+By converting the vectors into matrices, we obtain the projection estimators (PROJ) of $A$ and $B$, denoted by $\hat{A}_1$ and $\hat{B}_1$, with the normalization that $\|\hat{A}_1\|_F = 1$.
 
 ### MAR estimation (2): iterated least square
 
@@ -107,56 +93,41 @@ $$\sum_t B X_{t-1}' A' A X_{t-1} - \sum_t X_t' A X_{t-1} = 0$$
 
 With probability one, the problem has a unique global minimum, and finitely many local minima.
 
-Using the $\hat{A}_1$ and $\hat{B}_1$ $(PROJ)$ as the starting values, iteratively update one matrix, $\hat{A}$ or $\hat{B}$, while fixing the other
+Using the $\hat{A}_1$ and $\hat{B}_1$ (PROJ) as the starting values, iteratively update one matrix, $\hat{A}$ or $\hat{B}$, while fixing the other:
 
 $$B \leftarrow \left(\sum_t X_t' A X_{t-1}\right) \left(\sum_t X_{t-1}' A' A X_{t-1}\right)^{-1}$$
 
 $$A \leftarrow \left(\sum_t X_t B X_{t-1}'\right) \left(\sum_t X_{t-1} B' B X_{t-1}'\right)^{-1}$$
 
-to obtain $\hat{A}_2$ and $\hat{B}_2$, referred to as *LSE*.
+to obtain $\hat{A}_2$ and $\hat{B}_2$, referred to as LSE.
 
 ### Regularized MAR with ElasticNet
 
-Rewrite MAR into
+Rewrite MAR into:
 
-$$
-\text{vec}(Y_t) = ((B Y_{t-1}') \otimes I_m) \text{vec}(A) + \text{vec}(E_t)
-$$
+$$\text{vec}(Y_t) = ((B Y_{t-1}') \otimes I_m) \text{vec}(A) + \text{vec}(E_t)$$
 
-$$
-\text{vec}(Y_t') = ((A Y_{t-1}) \otimes I_n) \text{vec}(B) + \text{vec}(E_t')
-$$
+$$\text{vec}(Y_t') = ((A Y_{t-1}) \otimes I_n) \text{vec}(B) + \text{vec}(E_t')$$
 
-Denote
+Denote:
 
-$$
-\begin{aligned}
+$$\begin{aligned}
 Z_{t-1} &= (B Y_{t-1}') \otimes I_m, \quad \widehat{Z}_{t-1} = (\widehat{B} Y_{t-1}') \otimes I_m \\
 Z_{t-1}^* &= (A Y_{t-1}) \otimes I_n, \quad \widehat{Z}_{t-1}^* = (\widehat{A} Y_{t-1}) \otimes I_n
-\end{aligned}
-$$
+\end{aligned}$$
 
-Using $\widehat{A}_2$ and $\widehat{B}_2$ $(LSE)$ as the starting values, iteratively solve the optimization to update one matrix, $\widehat{A}$ or $\widehat{B}$, while fixing the other
+Using $\widehat{A}_2$ and $\widehat{B}_2$ (LSE) as the starting values, iteratively solve the optimization to update one matrix, $\widehat{A}$ or $\widehat{B}$, while fixing the other:
 
-$$
-\widehat{\alpha} = \arg\min_{\alpha \in \mathbb{R}^{m^2}} \left\{ \frac{1}{T} \sum_{t=2}^T \| \mathbf{y}_t - \widehat{\mathbf{Z}}_{t-1} \alpha \|_2^2 + \lambda_A \left( 0.95 \|\alpha\|_1 + 0.05 \|\alpha\|_2^2 \right) \right\}
-$$
+$$\widehat{\alpha} = \arg\min_{\alpha \in \mathbb{R}^{m^2}} \left\{ \frac{1}{T} \sum_{t=2}^T \| \mathbf{y}_t - \widehat{\mathbf{Z}}_{t-1} \alpha \|_2^2 + \lambda_A \left( 0.95 \|\alpha\|_1 + 0.05 \|\alpha\|_2^2 \right) \right\}$$
 
-$$
-\widehat{\beta} = \arg\min_{\beta \in \mathbb{R}^{n^2}} \left\{ \frac{1}{T} \sum_{t=2}^T \| \mathbf{y}_t^* - \widehat{\mathbf{Z}}_{t-1}^* \beta \|_2^2 + \lambda_B \left( 0.95 \|\beta\|_1 + 0.05 \|\beta\|_2^2 \right) \right\}
-$$
+$$\widehat{\beta} = \arg\min_{\beta \in \mathbb{R}^{n^2}} \left\{ \frac{1}{T} \sum_{t=2}^T \| \mathbf{y}_t^* - \widehat{\mathbf{Z}}_{t-1}^* \beta \|_2^2 + \lambda_B \left( 0.95 \|\beta\|_1 + 0.05 \|\beta\|_2^2 \right) \right\}$$
 
 The estimated coefficients are consistent under the condition that $\max(m,n)mn/T \rightarrow 0$, and $A$ and $B$ have a finite number of non-zero entries.
 
 ### LSTM
 
-- Vanilla LSTM:
-
-$$\hat{y}_{t} = W_{FC} h_{t-1}$$
-
-- Residual LSTM:
-
-$$\hat{y}_{t} = y_{t-1} + W_{FC} h_{t-1}$$
+- Vanilla LSTM: $\hat{y}_{t} = W_{FC} h_{t-1}$
+- Residual LSTM: $\hat{y}_{t} = y_{t-1} + W_{FC} h_{t-1}$
 
 ```text
 Time:        t=1            t=2                       t=N
