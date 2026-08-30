@@ -70,17 +70,9 @@ class ResidualLSTM(pl.LightningModule):
 
 #Hyperparameter: batch_size, seq_len, max_epochs
 class LSTM_Results:
-    def __init__(self, model: pl.LightningModule, name, batch_size, seq_len, max_epochs, input_dim, hidden_dim, output_dim, lr, weight_decay, dropout, num_layers):
+    def __init__(self, model: pl.LightningModule, name, batch_size, seq_len, max_epochs):
         self.model = model
         self.name = name
-        self.input_dim = input_dim
-        self.output_dim = output_dim
-        
-        self.hidden_dim = hidden_dim
-        self.lr = lr
-        self.weight_decay = weight_decay
-        self.dropout = dropout
-        self.num_layers = num_layers
         self.batch_size = batch_size
         self.seq_len = seq_len
         self.max_epochs = max_epochs
