@@ -126,8 +126,13 @@ The estimated coefficients are consistent under the condition that $\max(m,n)mn/
 
 ### LSTM
 
-- Vanilla LSTM: $\hat{y}_{t} = W_{FC} h_{t-1}$
-- Residual LSTM: $\hat{y}_{t} = y_{t-1} + W_{FC} h_{t-1}$
+- Vanilla LSTM: 
+
+$$\hat{y}_{t} = W_{FC} h_{t-1}$$
+
+- Residual LSTM: 
+
+$$\hat{y}_{t} = y_{t-1} + W_{FC} h_{t-1}$$
 
 ```text
 Time:        t=1            t=2                       t=N
