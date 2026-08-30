@@ -118,9 +118,9 @@ Z_{t-1}^* &= (A Y_{t-1}) \otimes I_n, \quad \widehat{Z}_{t-1}^* = (\widehat{A} Y
 
 Using $\widehat{A}_2$ and $\widehat{B}_2$ (LSE) as the starting values, iteratively solve the optimization to update one matrix, $\widehat{A}$ or $\widehat{B}$, while fixing the other:
 
-$$\widehat{\alpha} = \arg\min_{\alpha \in \mathbb{R}^{m^2}} \left\{ \frac{1}{T} \sum_{t=2}^T \| \mathbf{y}_t - \widehat{\mathbf{Z}}_{t-1} \alpha \|_2^2 + \lambda_A \left( 0.95 \|\alpha\|_1 + 0.05 \|\alpha\|_2^2 \right) \right\}$$
+$$\widehat{\alpha} = \arg\min_{\alpha \in \mathbb{R}^{m^2}} \{ \frac{1}{T} \sum_{t=2}^T \| \mathbf{y}_t - \widehat{\mathbf{Z}}_{t-1} \alpha \|_2^2 + \lambda_A ( 0.95 \|\alpha\|_1 + 0.05 \|\alpha\|_2^2 ) \}$$
 
-$$\widehat{\beta} = \arg\min_{\beta \in \mathbb{R}^{n^2}} \left\{ \frac{1}{T} \sum_{t=2}^T \| \mathbf{y}_t^* - \widehat{\mathbf{Z}}_{t-1}^* \beta \|_2^2 + \lambda_B \left( 0.95 \|\beta\|_1 + 0.05 \|\beta\|_2^2 \right) \right\}$$
+$$\widehat{\beta} = \arg\min_{\beta \in \mathbb{R}^{n^2}} \{ \frac{1}{T} \sum_{t=2}^T \| \mathbf{y}_t^* - \widehat{\mathbf{Z}}_{t-1}^* \beta \|_2^2 + \lambda_B ( 0.95 \|\beta\|_1 + 0.05 \|\beta\|_2^2 ) \}$$
 
 The estimated coefficients are consistent under the condition that $\max(m,n)mn/T \rightarrow 0$, and $A$ and $B$ have a finite number of non-zero entries.
 
